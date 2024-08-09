@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Bochner - Interactive Resume</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        @font-face { font-family: "Geist Mono Variable"; font-weight: 3; src: url('../static/GeistMono-UltraLight.woff2'); }
+        * {
+            font-weight: 3;
+        }
+        body {
+            font-family: 'Geist Mono Variable', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f4f8;
+        }
+        header {
+            background-color: #f8f9fa;
+            color: #2c3e50;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        h2 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        .contact-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .contact-info p {
+            margin: 5px 0;
+        }
+        .section {
+            background-color: white;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: #2980b9;
+        }
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .skill-category {
+            flex-basis: calc(50% - 15px);
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            cursor: pointer;
+        }
+        .skill-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .skill-category h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+            color: #3498db;
+        }
+        .skill-category p {
+            margin: 5px 0;
+        }
+        .experience-item {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        .experience-item h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .highlight {
+            background-color: #fff4de !important;
+            border: 2px solid #ffa600;
+        }
+        #github-browser {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            z-index: 1000;
+        }
+        #github-browser h2 {
+            margin-top: 0;
+        }
+        #github-content {
+            height: calc(100% - 60px);
+            overflow-y: auto;
+        }
+        #close-browser {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+        @media (max-width: 600px) {
+            .skill-category {
+                flex-basis: 100%;
+            }
+        }
+                .chatbot-sidebar {
+            width: 300px;
+            height: 100vh;
+            position: fixed;
+            right: 0;
+            top: 0;
+            background-color: #f0f0f0;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .chat-input {
+            display: flex;
+        }
+        .chat-input input {
+            flex: 1;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Mark Bochner</h1>
+        <div class="contact-info">
+            <p><a href="mailto:markbochner1@gmail.com">markbochner1@gmail.com</a></p>
+            <p>(908) 403-1660</p>
+            <p>Phoenix, AZ</p>
+            <p><a href="#" onclick="openGitHubBrowser(); return false;">Github</a></p>
+        </div>
+    </header>
+
+    <section id="summary" class="section">
+        <p id="objective"><strong>Data Science student with proven experience as a leader and in building a business from the ground up. Continuously learning and seeking mentorship in an entry level position.</strong></p>
+    </section>
+
+    <section id="education" class="section">
+        <h2>Education</h2>
+        <p><strong>MS Data Science</strong> (4.0 GPA)<br>
+        Eastern University, October 2024</p>
+        <p><strong>AZ Next Applied Business Data Analytics & Salesforce Developer Academy</strong><br>
+        Arizona State University, 2024</p>
+        <p><strong>BA Environmental Science</strong><br>
+        Alfred University, 2017</p>
+    </section>
+
+    <section id="skills" class="section">
+        <h2>Skills</h2>
+        <div class="skills">
+            <div class="skill-category" onclick="highlightSkill(this)">
+                <h3>Spreadsheets and BI software:</h3>
+                <p>Excel, Tableau</p>
+            </div>
+            <div class="skill-category" onclick="highlightSkill(this)">
+                <h3>Data Analysis and Visualization:</h3>
+                <p>R, SQL, Python</p>
+            </div>
+            <div class="skill-category" onclick="highlightSkill(this)">
+                <h3>Machine Learning:</h3>
+                <p>Scikit-learn, Keras, Tensorflow, Pytorch</p>
+            </div>
+            <div class="skill-category" onclick="highlightSkill(this)">
+                <h3>Generative AI:</h3>
+                <p>Google Cloud, Gemini</p>
+            </div>
+            <div class="skill-category" onclick="highlightSkill(this)">
+                <h3>Data Integration:</h3>
+                <p>Postman, JSON, XML, REST APIs</p>
+            </div>
+            <div class="skill-category" onclick="highlightSkill(this)">
+                <h3>Salesforce Development:</h3>
+                <p>Apex, DML, SOQL, SOSL, unit tests, Lighting Web Components</p>
+            </div>
+            <div class="skill-category" onclick="highlightSkill(this)">
+                <h3>Natural Language Processing:</h3>
+                <p>Transformers, NLTK - Eager to continue learning about this constantly evolving topic!</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience" class="section">
+        <h2>Experience</h2>
+        <div class="experience-item">
+            <h3>Independent Contractor - Remote, AZ</h3>
+            <p><strong>Multiple Projects</strong> (Present)</p>
+            <ul>
+                <li>Collaborated across large teams to label sets of Large Language Model data</li>
+            </ul>
+        </div>
+
+        <div class="experience-item">
+            <h3>Happy Bao's - Mesa, AZ</h3>
+            <p><strong>Kitchen Manager</strong> (June 2022 - October 2023)</p>
+            <ul>
+                <li>Responsible for a share of kitchen work in addition to management duties including inventory management and opening</li>
+                <li>Mentored new employees in a unique cooking style</li>
+                <li>Coordinated operations across multiple kitchens</li>
+                <li>Oversaw a 20% gain in efficiency alongside an 80% increase in productivity</li>
+            </ul>
+        </div>
+
+        <div class="experience-item">
+            <h3>H*CK YEAH Vegan Foods - Clark, NJ</h3>
+            <p><strong>Chef/Founder</strong> (September 2021 - March 2022)</p>
+            <ul>
+                <li>Created, tested, prepared, and served a unique menu of original vegan dishes</li>
+                <li>Marketed events in order to drive business and profitability, resulting in consistent return on investment</li>
+                <li>Created documentation including menus and recipes to ensure consistency</li>
+                <li>Collaborated with a partner to manage front of house operations</li>
+            </ul>
+        </div>
+    </section>
+
+    <div id="github-browser">
+        <h2>GitHub Repository Browser</h2>
+        <div id="github-content"></div>
+        <button id="close-browser" onclick="closeGitHubBrowser()">Close</button>
+    </div>
+    <div class="chatbot-sidebar">
+        <h3>Chatbot</h3>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+
+    <script>
+        function loadChatHistory() {
+
+            $.get('/get_chat_history', function(data) {
+                data.history.forEach(function(message) {
+                    if (message.role === 'model') {
+                        addMessage('Mr. Botner: ' + message.parts[0].text);
+                    }
+                    else {
+                        addMessage('You: ' + message.parts[0].text);
+                    }
+                });
+            });
+        }
+
+        function sendMessage() {
+            var userInput = document.getElementById('userInput');
+            var message = userInput.value;
+            if (message.trim() !== '') {
+                addMessage('You: ' + message);
+                userInput.value = '';
+                // Send the message to the server
+                fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({message: message}),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.type === 2) {
+                        window.location.href = data.redirect_url;
+                        }
+                    addMessage('Mr. Botner: ' + data.response);
+                });
+            }
+        }
+
+        function addMessage(message) {
+            var chatMessages = document.getElementById('chatMessages');
+            var messageElement = document.createElement('p');
+            messageElement.textContent = message;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    </script>
+
+    <script>
+        function highlightSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('highlight');
+            });
+            
+            const sectionToHighlight = document.getElementById(sectionId);
+            if (sectionToHighlight) {
+                sectionToHighlight.classList.add('highlight');
+            }
+        }
+
+        function highlightObjective() {
+            const objective = document.getElementById('objective');
+            objective.classList.toggle('highlight');
+        }
+
+        function highlightSkill(skillElement) {
+            skillElement.classList.toggle('highlight');
+        }
+
+        function openGitHubBrowser() {
+            const browser = document.getElementById('github-browser');
+            const content = document.getElementById('github-content');
+            browser.style.display = 'block';
+            
+            // Simulated repository content
+            content.innerHTML = `
+                <h3>Repository: data-science-projects</h3>
+                <ul>
+                    <li>README.md</li>
+                    <li>machine_learning_model.py</li>
+                    <li>data_visualization.ipynb</li>
+                    <li>requirements.txt</li>
+                </ul>
+                <p>This is a mock GitHub repository browser. In a real implementation, this would fetch and display actual repository data.</p>
+            `;
+        }
+
+        function closeGitHubBrowser() {
+            const browser = document.getElementById('github-browser');
+            browser.style.display = 'none';
+        }
+
+        // Highlight the education section when the page loads
+        window.onload = function() {
+            highlightSection('education');
+        };
+    </script>
+    <script>
+        $(document).ready(function() {
+            console.log('Document ready');
+            loadChatHistory();
+            $('.chat-input input').keypress(function(e) {
+                if (e.which == 13) {
+                    sendMessage();
+                    return false;
+                }
+            });
+
+        });
+
+    </script>
+</body>
+</html>
