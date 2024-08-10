@@ -140,16 +140,26 @@
             position: fixed;
             right: 0;
             top: 0;
-            background-color: #f0f0f0;
+            background-color: #1a5761;
             padding: 20px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
         }
+        .chatbot-container {
+      flex: 1;
+      background-color: #1a5761;
+      color: white;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+    }
         .chat-messages {
             flex: 1;
             overflow-y: auto;
             margin-bottom: 10px;
+            border: 1px solid #ccc;
+            color: white;
         }
         .chat-input {
             display: flex;
@@ -158,6 +168,21 @@
             flex: 1;
             margin-right: 10px;
         }
+        .chat-input button {
+      background-color: #2f7d86;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+        .chat-input button:hover {
+      background-color: #3c9aa5;
+    }
+        .white {
+            color: white;
+
     </style>
 </head>
 <body>
@@ -252,13 +277,23 @@
         </div>
     </section>
 
+
+
+    <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js"></script>
+
+    <script>
+    Calendly.initInlineWidget({
+    url: 'https://calendly.com/markbochner1',
+    parentElement: document.getElementById('calendly-embed')
+    });
+    </script>
+
     <div id="github-browser">
-        <h2>GitHub Repository Browser</h2>
-        <div id="github-content"></div>
+        <div id="calendly-embed" class="calendly" style="min-width:320px;height:700px;"></div>
         <button id="close-browser" onclick="closeGitHubBrowser()">Close</button>
     </div>
     <div class="chatbot-sidebar">
-        <h3>Chatbot</h3>
+        <h3 class="white">Mark Botner, Office Manager</h3>
         <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input">
             <input type="text" id="userInput" placeholder="Type your message...">
@@ -267,53 +302,7 @@
     </div>
 
 
-    <script>
-        function loadChatHistory() {
-
-            $.get('/get_chat_history', function(data) {
-                data.history.forEach(function(message) {
-                    if (message.role === 'model') {
-                        addMessage('Mr. Botner: ' + message.parts[0].text);
-                    }
-                    else {
-                        addMessage('You: ' + message.parts[0].text);
-                    }
-                });
-            });
-        }
-
-        function sendMessage() {
-            var userInput = document.getElementById('userInput');
-            var message = userInput.value;
-            if (message.trim() !== '') {
-                addMessage('You: ' + message);
-                userInput.value = '';
-                // Send the message to the server
-                fetch('/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({message: message}),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.type === 2) {
-                        window.location.href = data.redirect_url;
-                        }
-                    addMessage('Mr. Botner: ' + data.response);
-                });
-            }
-        }
-
-        function addMessage(message) {
-            var chatMessages = document.getElementById('chatMessages');
-            var messageElement = document.createElement('p');
-            messageElement.textContent = message;
-            chatMessages.appendChild(messageElement);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-    </script>
+    <script src="static/chatbot.js"></script>
 
     <script>
         function highlightSection(sectionId) {
@@ -339,6 +328,10 @@
         function openGitHubBrowser() {
             const browser = document.getElementById('github-browser');
             const content = document.getElementById('github-content');
+            Calendly.initInlineWidget({
+                url: 'https://calendly.com/markbochner1',
+                parentElement: document.getElementById('calendly-embed')
+            });
             browser.style.display = 'block';
             
             // Simulated repository content

@@ -6,14 +6,29 @@
   <title>Mark Bochner - Home</title>
   <style>
       @font-face { font-family: "Geist Mono Variable"; font-weight: 3; src: url('../static/GeistMono-UltraLight.woff2'); }
-    body {
+    .coffee{
+  max-width: 16%;
+  height: auto;
+        position: relative;
+        display: block;
+        padding-left: 74%;
+        padding-top: 59%;
+}
+      body {
       margin: 0;
       padding: 0;
       font-family: "Geist Mono Variable", sans-serif;
       background-color: #c4e1e7;
     }
+      body, html{
+          height: 100%;
+          overflow: hidden;
+      }
       h1 {
           font-weight: 3;
+      }
+      .white{
+          color: white;
       }
 
     .container {
@@ -72,6 +87,7 @@
       flex: 1;
       display: flex;
       flex-direction: column;
+        height: 75%;
     }
 
     .chat-messages {
@@ -110,53 +126,8 @@
     }
   </style>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        function loadChatHistory() {
+    <script src="static/chatbot.js"></script>
 
-            $.get('/get_chat_history', function(data) {
-                data.history.forEach(function(message) {
-                    if (message.role === 'model') {
-                        addMessage('Mr. Botner: ' + message.parts[0].text);
-                    }
-                    else {
-                        addMessage('You: ' + message.parts[0].text);
-                    }
-                });
-            });
-        }
-
-        function sendMessage() {
-            var userInput = document.getElementById('userInput');
-            var message = userInput.value;
-            if (message.trim() !== '') {
-                addMessage('You: ' + message);
-                userInput.value = '';
-                // Send the message to the server
-                fetch('/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({message: message}),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.type === 2) {
-                        window.location.href = data.redirect_url;
-                        }
-                    addMessage('Mr. Botner: ' + data.response);
-                });
-            }
-        }
-
-        function addMessage(message) {
-            var chatMessages = document.getElementById('chatMessages');
-            var messageElement = document.createElement('p');
-            messageElement.textContent = message;
-            chatMessages.appendChild(messageElement);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-    </script>
 
   <script>
         $(document).ready(function() {
@@ -175,7 +146,7 @@
 </head>
 <body>
   <div class="container">
-    <div class="image-container"></div>
+    <div class="image-container"><img class='coffee' src="../static/hot-coffee.gif"/></div>
     <div class="chatbot-container">
       <div class="header">
         <h1>Mark Bochner</h1>
@@ -186,7 +157,7 @@
         </div>
       </div>
       <div class="chatbot-sidebar">
-        <h3>Chatbot</h3>
+        <h3 class="white">Mark Botner, Office Manager</h3>
         <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input">
             <input type="text" id="userInput" placeholder="Type your message...">
