@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mark Bochner - Home</title>
+    <link rel="stylesheet" href="../static/chat.css">
   <style>
-      @font-face { font-family: "Geist Mono Variable"; font-weight: 3; src: url('../static/GeistMono-UltraLight.woff2'); }
-    .coffee{
+      .coffee{
   max-width: 16%;
   height: auto;
-        position: relative;
+          position: relative;
         display: block;
         padding-left: 74%;
         padding-top: 59%;
@@ -17,7 +17,7 @@
       body {
       margin: 0;
       padding: 0;
-      font-family: "Geist Mono Variable", sans-serif;
+          font-family: "Geist Mono Variable", sans-serif;
       background-color: #c4e1e7;
     }
       body, html{
@@ -34,6 +34,7 @@
     .container {
       display: flex;
       height: 100vh;
+        flex-direction: row;
     }
 
     .image-container {
@@ -41,15 +42,8 @@
       background-image: url('../static/2aa0bcec-687e-460e-974d-8c0044b9b6c2.jpg');
       background-size: cover;
       background-position: center;
-    }
+        display:flex;
 
-    .chatbot-container {
-      flex: 1;
-      background-color: #1a5761;
-      color: white;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
     }
 
     .header {
@@ -60,27 +54,8 @@
     }
 
     .header h1 {
-      font-size: 2.5rem;
+      font-size: 4rem;
       margin: 0;
-    }
-
-    .buttons {
-      display: flex;
-      gap: 1rem;
-    }
-
-    .buttons a {
-      background-color: #2f7d86;
-      color: white;
-      text-decoration: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      font-size: 1rem;
-      transition: background-color 0.3s;
-    }
-
-    .buttons a:hover {
-      background-color: #3c9aa5;
     }
 
     .chatbot-sidebar {
@@ -90,40 +65,13 @@
         height: 75%;
     }
 
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      padding: 1rem;
-      margin-bottom: 1rem;
-    }
 
-    .chat-input {
-      display: flex;
-      align-items: center;
-    }
 
-    .chat-input input {
-      flex: 1;
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      margin-right: 0.5rem;
-    }
 
-    .chat-input button {
-      background-color: #2f7d86;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
 
-    .chat-input button:hover {
-      background-color: #3c9aa5;
-    }
+
+
+
   </style>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="static/chatbot.js"></script>
@@ -143,6 +91,8 @@
         });
 
     </script>
+    <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+</head>
 </head>
 <body>
   <div class="container">
@@ -150,11 +100,6 @@
     <div class="chatbot-container">
       <div class="header">
         <h1>Mark Bochner</h1>
-        <div class="buttons">
-          <a href="#">Resume</a>
-          <a href="#">About</a>
-          <a href="#">Contact</a>
-        </div>
       </div>
       <div class="chatbot-sidebar">
         <h3 class="white">Mark Botner, Office Manager</h3>
@@ -166,5 +111,10 @@
     </div>
     </div>
   </div>
+
+<div id="calendly">
+        <div id="calendly-embed" class="calendly" style="min-width:320px;height:700px;display:inline-flex;"></div>
+        <button id="close-browser" onclick="closeCalendly()">Close</button>
+    </div>
 </body>
 </html>

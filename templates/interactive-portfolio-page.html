@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/chat.css"></link>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js"></script>
+    <script src="static/chatbot.js"></script>
+    <title>Interactive Portfolio</title>
+    <style>
+        #close-browser {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+        .white {
+            color: white;
+        }
+        body {
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            font-family: "Geist Mono Variable", sans-serif;
+            background-color: #c4e1e7;
+        }
+        .page-container {
+            margin: 0 auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: row;
+        }
+        .page-container div {
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px solid #e0e0e0;
+            max-width: 800px;
+        }
+        .chatbot-sidebar {
+            max-width: 300px;
+            height: 100vh;
+            position: fixed;
+            right: 0;
+            top: 0;
+            background-color: #1a5761;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        .section:hover {
+            background-color: #e9e9e9;
+        }
+        .section h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 1.5em;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 900px;
+            border-radius: 5px;
+            height: 80%;
+            overflow-y: auto;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal-content h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+        }
+        .modal-content h3 {
+            color: #34495e;
+        }
+        .modal-content ul {
+            padding-left: 20px;
+        }
+        .modal-content li {
+            margin-bottom: 10px;
+        }
+        .links-container {
+            align-items: center;
+            position: relative;
+            width: 100%;
+        }
+        .links-container div {
+            margin: 8px;
+            width: auto;
+        }
+        .chat-messages {
+          flex: 1;
+          overflow-y: auto;
+          border: 1px solid #ccc;
+          padding: 1rem;
+          margin-bottom: 1rem;
+          color: white;
+            width: auto;
+        }
+        .buttons-container {
+            display: flex;
+            flex-direction: row;
+        }
+        .button{
+            display: inline-flex;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="links-container">
+        <h1>Projects</h1>
+        
+        <div class="section" onclick="openModal('MovieReadme')">
+            <h2>Movie Scripts</h2>
+            <div class="buttons-container">
+                <button class='button' onclick="openModal('BechdelTest');event.stopPropagation()">Initial Data Collection</button>
+                <button class='button' onclick="openModal('NaiveBayes');event.stopPropagation()">Genre Classification with Naive Bayes</button>
+            </div>
+        </div>
+        <div class="section">
+            <h2>View the Code Behind this Website</h2>
+            <div class="buttons-container">
+                <button class='button' onclick="openModal('AppPy');event.stopPropagation()">app.py</button>
+                <button class='button' onclick="openModal('ChatBot');event.stopPropagation()">chatbot.js</button>
+            </div>
+        </div>
+
+        </div>
+
+        <div class="chatbot-container">
+    <div id="calendly">
+        <div id="calendly-embed" class="calendly" style="min-width:1px;min-height:1px;display:inline-flex;"></div>
+        <button id="close-browser" onclick="closeCalendly()">Close</button>
+    </div>
+    <div class="chatbot-sidebar">
+        <h3 class="white">Mark Botner, Office Manager</h3>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    </div>
+
+    </div>
+
+    <div id="BechdelTestModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('BechdelTest')">&times;</span>
+            <script src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2Fmocboch%2FMovie-Script-Data-Analysis%2Fblob%2Fmaster%2FBechdel%2520Test.ipynb&style=default&type=ipynb&showBorder=on&showLineNumbers=on&showFileMeta=on&showFullPath=on&showCopy=on"></script>
+        </div>
+    </div>
+
+    <div id="NaiveBayesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('NaiveBayes')">&times;</span>
+            <script src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2Fmocboch%2FMovie-Script-Data-Analysis%2Fblob%2Fmaster%2FNaive%2520Bayes%2520for%2520Genre%2520Identification.ipynb&style=default&type=ipynb&showBorder=on&showLineNumbers=on&showFileMeta=on&showFullPath=on&showCopy=on"></script>
+        </div>
+    </div>
+    <div id="AppPyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('AppPy')">&times;</span>
+            <script src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2Fmocboch%2Fwebsite%2Fblob%2Fmaster%2Fapp.py&style=intellij-light&type=code&showBorder=on&showLineNumbers=on&showFileMeta=on&showFullPath=on&showCopy=on"></script>
+        </div>
+    </div>
+    <div id="ChatBotModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('ChatBot')">&times;</span>
+            <script src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2Fmocboch%2Fwebsite%2Fblob%2Fmaster%2Fstatic%2Fchatbot.js&style=intellij-light&type=code&showBorder=on&showLineNumbers=on&showFileMeta=on&showFullPath=on&showCopy=on"></script>
+        </div>
+    </div>
+
+    <div id="MovieReadmeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('MovieReadme')">&times;</span>
+            <h2>Collecting and Analyzing Unstructured Movie Script Data</h2>
+            <ul>
+                <li>Integrated data from various sources into a PostgreSQL database using web scraping and APIs</li>
+                <li>Created visualizations in matplotlib and seaborn</li>
+                <li>Cleaned and analyzed a large volume of structured and unstructured data, applying a variety of ML and NLP techniques</li>
+            </ul>
+        </div>
+    </div>
+
+
+    <script>
+        function openModal(id) {
+            document.getElementById(id + 'Modal').style.display = 'block';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id + 'Modal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = 'none';
+            }
+
+        }
+    </script>
+</body>
+</html>

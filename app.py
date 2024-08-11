@@ -1,32 +1,27 @@
 from flask import *
 import google.generativeai as genai
 from flask_pymongo import PyMongo
-from bson import ObjectId
-from uuid import uuid4
 import os
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-import pickle
 from copy import deepcopy as copy
 from pymongo import MongoClient
 from langchain.vectorstores import MongoDBAtlasVectorSearch
-from langchain.retrievers import ContextualCompressionRetriever
-from langchain.retrievers.document_compressors import LLMChainExtractor
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain import hub
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 import threading
-from sqlalchemy.sql.functions import current_user
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
-
+app.langchain_api_key = open('langchain_api_key.txt').read()
 
 @app.before_request
 def startup():                                                                      #Sets up chat and vectorstore on startup
     app.retriever_ready = False
+    app.projects_retriever_ready = False
     session['chat_hist'] = [{'role': 'model',
                              'parts': [{'text': 'Hi there! \nI\'m Mr. Botner, Mark\'s AI assistant. I can show you his resume, tell you about his skills, or get you in touch with him. I can even help you set up an interview! \n\nWhat can I do for you today?'}]}]                                                       #chat_hist is stored as a list of dicts in session memory
     with open('mongo_info.txt') as f:
@@ -35,17 +30,28 @@ def startup():                                                                  
     session['mongo_uri'] = mongo_uri                                                #Store it in session memory
     app.config["MONGO_URI"] = os.environ.get('MONGODB_URI', mongo_uri)
     mongo = PyMongo(app)                                                            #Configure and run PyMongo
-
+    app.google_api_key = open('google_api_key.txt').read()
     def create_retriever(mongo_uri=mongo_uri):
         embeddings = HuggingFaceEmbeddings()                                            #Instantiate a HuggingFaceEmbeddings model- this is taking too long
+        '''
+        projects_search = MongoDBAtlasVectorSearch.from_connection_string(
+            mongo_uri,
+            'website-database.projects',
+            embeddings,
+            index_name='vec_ind'
+        )
+        app.projects_retriever = projects_search.as_retriever(search_type="similarity", search_kwargs={"k": 5})
+        app.projects_retriever_ready = True
+        '''
         vector_search = MongoDBAtlasVectorSearch.from_connection_string(
             mongo_uri,
             'website-database.education',                                               #Create a vector search object
             embeddings,
             index_name="vec_ind"
         )
-        app.retriever = vector_search.as_retriever(search_type="similarity", search_kwargs={"k": 10})    #Store it as a retriever for use later
+        app.retriever = vector_search.as_retriever(search_type="similarity", search_kwargs={"k": 15})    #Store it as a retriever for use later
         app.retriever_ready = True
+
     threading.Thread(target=create_retriever, daemon=True).start()
     app.before_request_funcs[None].remove(startup)
 
@@ -86,9 +92,35 @@ def handleMemo():
 
 @app.route('/chat', methods=['POST'])
 def chat():                                         #Chat response logic
-    with open('google_api_key.txt') as f:           #Configure API key for google gemini
-        genai.configure(api_key=f.read())           #showResume returns a stock messsage and reroutes to the resume page
+    genai.configure(api_key=app.google_api_key)           #showResume returns a stock messsage and reroutes to the resume page
                                                  #It also updates the session[chat_hist] to give the model the appropriate context
+    '''
+    def discussProject(query: str):
+        ''''''
+        Provides information about Mark's project experience to the User. Called when the user requests information about Mark's projects or experience.
+        Args:
+            query: A string containing the user's query. Copied or lightly modified if necessary
+        Returns:
+            The requested information about Mark's project experience
+        ''''''
+        client = MongoClient(session['mongo_uri'])
+        model = ChatGoogleGenerativeAI(model='gemini-1.5-flash', api_key=app.google_api_key)
+        prompt = hub.pull("project-prompt", api_key=app.langchain_api_key)
+
+        def format_docs(docs):
+            return "\n\n".join(doc.page_content for doc in docs)
+
+        rag_chain = (
+                {"context": app.projects_retriever | format_docs, "question": RunnablePassthrough()}
+                | prompt
+                | model
+                | StrOutputParser()
+        )
+        r = ' '.join([chunk for chunk in rag_chain.stream(query)])
+        session['chat_hist'][-1]['parts'][0]['text'] = r
+        print(query)
+        return jsonify({'response': r, 'type': 1})
+    '''
     def goHome():
         '''
         Returns the user to the homepage. Called when the user requests to return to the home page.
@@ -138,10 +170,9 @@ def chat():                                         #Chat response logic
         returns:
             A response to the user's request
         '''
-        google_api_key = open('google_api_key.txt').read()
         client = MongoClient(session['mongo_uri'])
-        model = ChatGoogleGenerativeAI(model='gemini-1.5-flash', api_key=google_api_key)
-        prompt = hub.pull("rlm/rag-prompt")
+        model = ChatGoogleGenerativeAI(model='gemini-1.5-flash', api_key=app.google_api_key)
+        prompt = hub.pull('rlm/rag-prompt')
 
         def format_docs(docs):
             return "\n\n".join(doc.page_content for doc in docs)
@@ -158,6 +189,7 @@ def chat():                                         #Chat response logic
         return jsonify({'response': r, 'type':1})
     tools = [showResume, sendMemo, setInterview, goHome]
     if app.retriever_ready == True: tools.append(discussEducation)
+    #if app.projects_retriever_ready == True: tools.append(discussProject)
     model = genai.GenerativeModel('gemini-1.5-flash-latest', safety_settings=[
             {
                 "category": "HARM_CATEGORY_HARASSMENT",

@@ -52,13 +52,7 @@ function sendMessage() {
                         seq = 1;
                     }
                     if (data.type === 4) {
-                        const browser = document.getElementById('github-browser');
-                        const content = document.getElementById('github-content');
-                        Calendly.initInlineWidget({
-                            url: 'https://calendly.com/markbochner1',
-                            parentElement: document.getElementById('calendly-embed')
-                        });
-                        browser.style.display = 'block';
+                        openCalendly();
                     }
 
                 });
@@ -73,3 +67,21 @@ function addMessage(message) {
     chatMessages.appendChild(messageElement);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
+
+function openCalendly() {
+            const browser = document.getElementById('calendly');
+            const content = document.getElementById('calendly-content');
+
+            browser.style.display = 'block';
+        }
+function closeCalendly() {
+    const browser = document.getElementById('calendly');
+    browser.style.display = 'none';
+}
+window.onload = function() {
+    closeCalendly();
+    Calendly.initInlineWidget({
+        url: 'https://calendly.com/markbochner1',
+        parentElement: document.getElementById('calendly-embed')
+    });
+};
