@@ -30,7 +30,6 @@
       .white{
           color: white;
       }
-
     .container {
       display: flex;
       height: 100vh;
@@ -75,23 +74,8 @@
   </style>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="static/chatbot.js"></script>
-
-
-  <script>
-        $(document).ready(function() {
-            console.log('Document ready');
-            loadChatHistory();
-            $('.chat-input input').keypress(function(e) {
-                if (e.which == 13) {
-                    sendMessage();
-                    return false;
-                }
-            });
-
-        });
-
-    </script>
     <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+    <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
 </head>
 </head>
 <body>
@@ -107,14 +91,37 @@
         <div class="chat-input">
             <input type="text" id="userInput" placeholder="Type your message...">
             <button onclick="sendMessage()">Send</button>
+            <button onclick="fetch('/refresh_chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }}).then(location.reload());">Refresh
+            </button>
         </div>
     </div>
     </div>
   </div>
 
 <div id="calendly">
-        <div id="calendly-embed" class="calendly" style="min-width:320px;height:700px;display:inline-flex;"></div>
-        <button id="close-browser" onclick="closeCalendly()">Close</button>
+    <div id="calendly-embed" class="calendly" style="min-width:320px;height:700px;display:inline-flex;"></div>
+    <button id="close-browser" onclick="closeCalendly()">Close</button>
+</div>
+<div id="contact">
+        <div id="contact-embed" class="contact" style="min-width:320px;height:500px;display:inline-flex;">
+
+            <img src="../static/My%20vCard.svg" alt="qr code" />
+            <div class="contact-details">
+                <div class="github-card" data-github="mocboch" data-width="400" data-height="150" data-theme="default"></div>
+                <script src="//cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
+                <br><span>(908) 403-1660</span><br>
+                <span>markbochner1@gmail.com</span><br>
+                <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
+                <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="large" data-theme="light" data-type="HORIZONTAL" data-vanity="mark-bochner-618071263" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://www.linkedin.com/in/mark-bochner-618071263?trk=profile-badge">LinkedIn</a></div>
+
+
+            </div>
+        </div>
+        <button id="close-browser" onclick="closeContact()">Close</button>
     </div>
 </body>
 </html>

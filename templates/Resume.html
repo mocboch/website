@@ -4,10 +4,33 @@
     <link rel="stylesheet" href="../static/chat.css">
     <meta charset="UTF-8">
     <title>Mark Bochner - Interactive Resume</title>
+    <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js"></script>
     <script src="static/chatbot.js"></script>
+
     <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #c4e1e7;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            width: fit-content;
+            height: fit-content;
+            border-radius: 5px;
+            overflow-y: auto;
+        }
         .page-container {
             display: flex;
             flex-direction: row;
@@ -62,15 +85,7 @@
             padding-bottom: 10px;
             margin-top: 30px;
         }
-        .contact-info {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-        .contact-info p {
-            margin: 5px 0;
-        }
+
         .section {
             background-color: white;
             margin-bottom: 20px;
@@ -101,6 +116,10 @@
             border-radius: 8px;
             transition: transform 0.3s ease, background-color 0.3s ease;
             cursor: pointer;
+            height: fit-content;
+        }
+        .sk {
+            max-width: 325px;
         }
         .skill-category:hover {
             transform: translateY(-5px);
@@ -127,7 +146,6 @@
             background-color: #fff4de !important;
             border: 2px solid #ffa600;
         }
-
         #close-browser {
             position: absolute;
             top: 10px;
@@ -140,12 +158,12 @@
             }
         }
         .chatbot-sidebar {
-            width: 300px;
+            width: 400px;
             height: 100vh;
             position: sticky;
             right: 0;
             top: 0;
-            background-color: #1a5761;
+            background-color: #0F68B6;
             padding: 20px;
             box-sizing: border-box;
             display: flex;
@@ -154,7 +172,33 @@
         .white {
             color: white;
         }
-
+        .skill-category p {
+            display: none;
+            margin-top: 5px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .skill-category.highlight p {
+            display: block;
+        }
+        .certs-container {
+            display: flex;
+            flex-direction: row;
+        }
+        #certs div {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            cursor: pointer;
+            height: fit-content;
+            gap: 30px;
+            align-items: center;
+        }
+        #certs div:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
     </style>
 </head>
@@ -163,65 +207,112 @@
 <div class="resume-container">
     <header class="center">
         <h1>Mark Bochner</h1>
+        <h1 style="font-size: 24px">AI / ML Engineer</h1>
       <section id="summary" class="section">
         <p id="objective"><strong>Data Science student with proven experience as a leader and in building a business from the ground up. Continuously learning and seeking mentorship in an entry level position.</strong></p>
     </section>
     </header>
-
-
-
     <section id="skills" class="section">
         <h2>Education</h2>
-        <p><strong>MS Data Science</strong> (4.0 GPA)<br>
-        Eastern University, October 2024</p>
-        <p><strong>AZ Next Applied Business Data Analytics & Salesforce Developer Academy</strong><br>
-        Arizona State University, 2024</p>
-        <p><strong>BA Environmental Science</strong><br>
-        Alfred University, 2017</p>
-    </section>
+        <div class="skill-category" onclick="highlightSkill(this)">
+                <h3>MS Data Science (4.0 GPA)</h3>
+                <h4>Eastern University, October 2024</h4>
+                <p>Eastern University's Master's in Data Science program offers a rigorous and comprehensive curriculum that takes students from foundational concepts to advanced applications in the field. The program covers essential areas including statistical modeling, machine learning, data visualization, and programming in Python and R, with a strong emphasis on practical skills and real-world data analysis. Students progress through increasingly complex topics, culminating in advanced courses on machine learning, natural language processing, and a capstone project that integrates their learning. The curriculum also addresses the ethical implications of data science and AI, ensuring graduates are well-rounded professionals. This structured approach prepares students for the demands of the rapidly evolving data science landscape in both academic and industry settings.</p>
+        </div>
+        <div class="skill-category" onclick="highlightSkill(this)">
+                <h3>Applied Business Data Analytics</h3>
+                <h4>Arizona State University</h4>
+                <p>Certificate program in practical uses for computer-based tool suites that are capable of managing vast amounts of data, offered by the W.P. Carey School of Business through AZNext. Students learn sophisticated means of managing and analyzing data, and leverage those tools to make decisions about projects, process designs and fundamental tasks.
+                    Exposure to predictive analytics and modeling, big data techniques, and visualization provides significant insight into the advanced uses of the computer-based tools. Students learn to evaluate evidence-based benchmarks and make smart data decisions, leading to high-quality outcomes.
+        </div>
+        <div class="skill-category" onclick="highlightSkill(this)">
+                <h3>Salesforce Development Academy</h3>
+                <h4>Arizona State University</h4>
+                <p>Gained real world, hands-on experience in developming and configuring salesforce applications that will provide preparedness for the Salesforce Platform Developer credential exam by using Salesforce's Trailhead learning system faciliated by ASU faculty and supported by ASU coursework and guest lecturers from Deloitte.</p>
+        </div>
+        <div class="skill-category" onclick="highlightSkill(this)">
+                <h3>BA Environmental Science</h3>
+                <h4>Alfred University</h4>
+                <p>Coursework included foundational studies in statistical data analysis and the scientific method as well as courses in the physical sciences, software engineering, and GIS.</p>
 
+        </div>
+        <div class="skill-category" onclick="highlightSkill(this)">
+                <h3>High School Diploma</h3>
+                <h4>Academy for Information Technology</h4>
+                <p>I am proud to have attended a high school that consistently ranks among the best in the nation! When I attended, coursework included Microsoft Certified Application Specialist and A+ certification, as well as courses in SQL and Java.</p>
+        </div>
+    </section>
     <section id="skills" class="section">
         <h2>Skills</h2>
         <div class="skills">
-            <div class="skill-category" onclick="highlightSkill(this)">
-                <h3>Spreadsheets and BI software:</h3>
-                <p>Excel, Tableau</p>
+            <div class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Databases</h3>
+                <p>Experience with both relational and NoSQL databases
+                including PostgreSQL, SQLite, and MongoDB.</p>
             </div>
-            <div class="skill-category" onclick="highlightSkill(this)">
-                <h3>Data Analysis and Visualization:</h3>
-                <p>R, SQL, Python</p>
+            <div class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Natural Language Processing</h3>
+                <p>Skills in fundamental algorithms and models like Hidden Markov and CKY
+                    as well as modern frameworks and applications including Transformers,
+                    NLTK, and BERT models. Experience building an RAG system with Langchain.</p>
             </div>
-            <div class="skill-category" onclick="highlightSkill(this)">
-                <h3>Machine Learning:</h3>
-                <p>Scikit-learn, Keras, Tensorflow, Pytorch</p>
+            <div class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Data Analysis and Visualization</h3>
+                <p>Data Analysis skills in R and Python,
+                    visualization with Matplotib, Seaborn, and Ggplot2</p>
             </div>
-            <div class="skill-category" onclick="highlightSkill(this)">
-                <h3>Generative AI:</h3>
-                <p>Google Cloud, Gemini</p>
+            <div class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Machine Learning</h3>
+                <p>Proficient in various machine learning techniques;
+                    experience deploying end-to-end machine learning projects
+                    using Scikit-Learn, PyTorch, Tensorflow, and Keras</p>
             </div>
-            <div class="skill-category" onclick="highlightSkill(this)">
-                <h3>Data Integration:</h3>
-                <p>Postman, JSON, XML, REST APIs</p>
+            <div class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Generative AI</h3>
+                <p>Well-versed in various generative AI frameworks
+                    including Google Cloud and Langchain</p>
             </div>
-            <div class="skill-category" onclick="highlightSkill(this)">
-                <h3>Salesforce Development:</h3>
-                <p>Apex, DML, SOQL, SOSL, unit tests, Lighting Web Components</p>
+            <div class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Data Integration</h3>
+                <p>Practiced at collecting and integrating data using postman,
+                    REST and SOAP APIs, and JSON and XML data formats</p>
             </div>
-            <div class="skill-category" onclick="highlightSkill(this)">
-                <h3>Natural Language Processing:</h3>
-                <p>Transformers, NLTK - Eager to continue learning about this constantly evolving topic!</p>
+            <div class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Cloud Engineering</h3>
+                <p>Experience deploying an application on AWS Elastic
+                Beanstalk, and integrating with a cloud database
+                (MongoDB Atlas) as well as a variety of webservices.</p>
             </div>
+            <div class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Spreadsheets and BI software</h3>
+                <p>Advanced skills with analytical functions
+                    in Microsoft Excel and dashboards in Tableau</p>
+            </div>
+            <div class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Salesforce Development</h3>
+                <p>Familiar with the Salesforce development framework
+                    including skills in Apex, DML, SOSL, SOQL,
+                    and Lightning Web Components</p>
+            </div>
+
         </div>
     </section>
-
+    <section id="certs" class="section">
+        <h2>Credentials</h2>
+        <section class="certs-container">
+            <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="7910d1a3-2a55-43f3-8644-49792e812605" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
+            <blockquote class="badgr-badge"><a href="https://api.badgr.io/public/assertions/oc5nosfFR22SfkGocS5C3A"><img width="120px" height="120px" src="https://api.badgr.io/public/assertions/oc5nosfFR22SfkGocS5C3A/image"></a><p class="badgr-badge-date" style="margin: 0; font-size: 12px; font-style: normal; font-stretch: normal; line-height: 1.67; letter-spacing: normal; text-align: left; color: #555555;"><strong style="font-size: 12px; font-weight: bold; font-style: normal; font-stretch: normal; line-height: 1.67; letter-spacing: normal; text-align: left; color: #000;">Awarded: </strong>Mar 15, 2024</p><p class="badgr-badge-recipient" style="margin: 0; font-size: 12px; font-style: normal; font-stretch: normal; line-height: 1.67; letter-spacing: normal; text-align: left; color: #555555;"><strong style="font-size: 12px; font-weight: bold; font-style: normal; font-stretch: normal; line-height: 1.67; letter-spacing: normal; text-align: left; color: #000;">Awarded To: </strong><span style="display: block;"> Mark Bochner</span></p><p style="margin: 16px 0; padding: 0;"><a class="badgr-badge-verify" target="_blank" href="https://badgecheck.io?url=https%3A%2F%2Fapi.badgr.io%2Fpublic%2Fassertions%2Foc5nosfFR22SfkGocS5C3A" style="box-sizing: content-box; display: flex; align-items: center; justify-content: center; margin: 0; font-size:14px; font-weight: bold; width: 48px; height: 16px; border-radius: 4px; border: solid 1px black; text-decoration: none; padding: 6px 16px; margin: 16px 0; color: black;">VERIFY</a></p><script async="async" src="https://badgr.com/assets/widgets.bundle.js"></script></blockquote>
+            <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="3983b637-c4c3-467e-8fc0-e535c08a1eff" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
+            <div style="height: 210px" onclick="openModal('Google')">IBM Generative AI for Data Scientists Certificate</div>
+            <div style="height: 210px" onclick="openModal('Proud')">Proud Graduate</div>
+        </section>
+    </section>
     <section id="experience" class="section">
         <h2>Experience</h2>
         <div class="experience-item">
-            <h3>Independent Contractor - Remote, AZ</h3>
+            <h3>Independent Contractor - AZ</h3>
             <p><strong>Multiple Projects</strong> (Present)</p>
-            <ul>
-                <li>Collaborated across large teams to label sets of Large Language Model data</li>
-            </ul>
+            <p>Check out some of my projects; just ask Mr. Botner!</p>
         </div>
 
         <div class="experience-item">
@@ -251,6 +342,23 @@
         <div id="calendly-embed" class="calendly" style="min-width:1px;min-height:1px;display:inline-flex;"></div>
         <button id="close-browser" onclick="closeCalendly()">Close</button>
     </div>
+    <div id="contact">
+        <div id="contact-embed" class="contact" style="min-width:320px;height:500px;display:inline-flex;">
+
+            <img src="https://genqrcode.com/embedded?style=7&inner_eye_style=3&outer_eye_style=5&logo=de7388f4e7d5c492aebc315844138144&color=%23000000FF&background_color=%23FFFFFFFF&inner_eye_color=%23000000&outer_eye_color=%23000000&imageformat=svg&language=en&frame_style=0&frame_text=SCAN%20ME&frame_color=%23000000&invert_colors=false&gradient_style=0&gradient_color_start=%230057B8&gradient_color_end=%23FFD700&gradient_start_offset=50&gradient_end_offset=50&stl_type=1&logo_remove_background=false&stl_size=100&stl_qr_height=1.5&stl_base_height=2&stl_qr_magnet_type=3&stl_qr_magnet_count=0&type=0&text=https%3A%2F%2Fqri.lu%2FN9HzcOI&width=500&height=500&bordersize=2" alt="qr code" />
+            <div class="contact-details">
+                <div class="github-card" data-github="mocboch" data-width="400" data-height="150" data-theme="default"></div>
+                <script src="//cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
+                <br><span>(908) 403-1660</span><br>
+                <span>markbochner1@gmail.com</span><br>
+                <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
+                <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="large" data-theme="light" data-type="HORIZONTAL" data-vanity="mark-bochner-618071263" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://www.linkedin.com/in/mark-bochner-618071263?trk=profile-badge">LinkedIn</a></div>
+
+
+            </div>
+        </div>
+        <button id="close-browser" onclick="closeContact()">Close</button>
+    </div>
     <div class="chatbot-sidebar">
         <h3 class="white">Mark Botner, Office Manager</h3>
         <div class="chat-messages" id="chatMessages"></div>
@@ -262,8 +370,23 @@
 </div>
 
 
+<script>
+    function openModal(id) {
+        document.getElementById(id + 'Modal').style.display = 'block';
+    }
 
-    <script>
+    function closeModal(id) {
+        document.getElementById(id + 'Modal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target.className === 'modal') {
+            event.target.style.display = 'none';
+        }
+
+    }
+</script>
+<script>
         function highlightSection(sectionId) {
             document.querySelectorAll('.section').forEach(section => {
                 section.classList.remove('highlight');
@@ -282,22 +405,21 @@
 
         function highlightSkill(skillElement) {
             skillElement.classList.toggle('highlight');
+            const skillsContainer = document.querySelector('.skills');
+            skillsContainer.insertBefore(element, skillsContainer.firstChild);
         }
 
     </script>
-    <script>
-        $(document).ready(function() {
-            console.log('Document ready');
-            loadChatHistory();
-            $('.chat-input input').keypress(function(e) {
-                if (e.which == 13) {
-                    sendMessage();
-                    return false;
-                }
-            });
-
-        });
-
-    </script>
+<div id="GoogleModal" class="modal">
+    <section class="modal-content">
+        <embed width="600" height="550" src="./static/Coursera DUY3KCG9J92D.pdf">
+    </section>
+</div>
+<div id="ProudModal" class="modal">
+    <section class="modal-content">
+        <img width="600" src="./static/preschool_diploma.jpeg">
+    </section>
+</div>
+</div>
 </body>
 </html>

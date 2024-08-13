@@ -1,17 +1,17 @@
-
 var seq = 0
+
 function loadChatHistory() {
 
-    $.get('/get_chat_history', function(data) {
-        data.history.forEach(function(message) {
+    $.get('/get_chat_history', function (data) {
+        data.history.forEach(function (message) {
             if (message.role === 'model') {
                 addMessage('Mr. Botner: ' + message.parts[0].text);
-            }
-            else {
+            } else {
                 addMessage('You: ' + message.parts[0].text);
             }
         });
     });
+
 }
 
 function sendMessage() {
@@ -27,8 +27,7 @@ function sendMessage() {
             },
             body: JSON.stringify({message: message}),
         }).then(seq = 0).then(addMessage('Mr. Botner: Ok, I\'ll let Mark know. What else can I help you with?'))
-    }
-    else {
+    } else {
         var userInput = document.getElementById('userInput');
         var message = userInput.value;
         if (message.trim() !== '') {
@@ -52,7 +51,15 @@ function sendMessage() {
                         seq = 1;
                     }
                     if (data.type === 4) {
-                        openCalendly();
+                        switch (data.request) {
+                            case 'calendar':
+                                openCalendly();
+                                break;
+                            case 'contact':
+                                openContact();
+                                break;
+                        }
+
                     }
 
                 });
@@ -69,19 +76,44 @@ function addMessage(message) {
 }
 
 function openCalendly() {
-            const browser = document.getElementById('calendly');
-            const content = document.getElementById('calendly-content');
+    const browser = document.getElementById('calendly');
+    const content = document.getElementById('calendly-content');
 
-            browser.style.display = 'block';
-        }
+    browser.style.display = 'block';
+}
+function openContact() {
+    const browser = document.getElementById('contact');
+    const content = document.getElementById('contact-content');
+
+    browser.style.display = 'block';
+}
+
 function closeCalendly() {
     const browser = document.getElementById('calendly');
     browser.style.display = 'none';
 }
-window.onload = function() {
-    closeCalendly();
+function closeContact() {
+    const browser = document.getElementById('contact');
+    browser.style.display = 'none';
+}
+
+window.onload = function () {
     Calendly.initInlineWidget({
         url: 'https://calendly.com/markbochner1',
         parentElement: document.getElementById('calendly-embed')
     });
 };
+
+$(document).ready(function() {
+    console.log('Document ready');
+    loadChatHistory();
+    $('.chat-input input').keypress(function(e) {
+        if (e.which == 13) {
+            sendMessage();
+            return false;
+        }
+    });
+
+});
+
+window.onbeforeunload = () => fetch('/stop');

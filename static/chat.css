@@ -1,12 +1,17 @@
-@font-face { font-family: "Geist Mono Variable"; font-weight: 3; src: url('../static/GeistMono-UltraLight.woff2'); }
+@font-face { font-family: "Geist Mono Variable"; src: url('../static/GeistMono-UltraLight.woff2'); }
+@font-face { font-family: "Geist Mono Variable"; font-weight: bold; src: url('../static/GeistMono-SemiBold.woff2'); }
+
+* {
+    font-family: "Geist Mono Variable";
+}
 .chatbot-container {
       flex: 1;
-      background-color: #1a5761;
+      background-color: #0F68B6;
       color: white;
       padding: 2rem;
       display: flex;
       flex-direction: column;
-    }
+}
 .chat-messages {
       flex: 1;
       overflow-y: auto;
@@ -70,27 +75,48 @@
     text-decoration: none;
     cursor: pointer;
 }
-
+#contact-embed {
+    height: 400px;
+    width: 800px;
+}
 #calendly-embed {
     min-width: 320px;
     height: 630px;
 }
-#calendly {
-    display: flex;
+#calendly, #contact {
+    display: none;
     position: fixed;
-    top: 50%;
-    left: 15%;
-    transform: translate(-50%, -50%);
-    background-color: #c4e1e7;
+    top: 10%;
+    left: 10%;
+    transform: translate(0%, -10%);
+    background-color: #0F68B6;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
     z-index: 1000;
+    color: white;
+    font-size: 26px;
 }
+
 #calendly h2 {
     margin-top: 0;
 }
+#contact-embed{
+    display: flex;
+    flex-direction: row;
+}
+
 #calendly-content {
     height: calc(100% - 60px);
     overflow-y: auto;
+}
+.contact-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.contact img {
+    width: 400px;
+    height: 400px;
+    margin-right: 25px;
 }
