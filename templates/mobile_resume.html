@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Bochner - Resume</title>
+    <link rel="stylesheet" href="../static/mobile_style.css">
+</head>
+<body>
+    <h1>Mark Bochner</h1>
+    <button class="nav" onclick="window.location.href ='./mobile_contact';">Contact</button><button class="nav" onclick="window.location.href ='./projects';">Portfolio</button>
+    <div id="summary" class="section">
+        <h2>Summary</h2>
+        <div class="button-container">
+            <div class="skill-category modal-button" onclick="toggleHighlight(this, 'aiml-engineer')">
+                <h3 id="aiml-engineer" class="summary-item">AI/ML Engineer</h3>
+                <p>Creative builder with a passion for design and a desire to work on the cutting edge of Artificial Intelligence</p>
+            </div>
+            <div class="skill-category modal-button" onclick="toggleHighlight(this, 'data-science-student')">
+                <h3 id="data-science-student" class="summary-item">Data Science Student</h3>
+                <p>Curious, lifelong learner with particular interests in Natural Language Processing and Bayesian statistics</p>
+            </div>
+            <div class="skill-category modal-button" onclick="toggleHighlight(this, 'seeking-mentorship')">
+                <h3 id="seeking-mentorship" class="summary-item">Seeking Mentorship</h3>
+                <p>Looking for an entry level role in AI Engineering or Data Science, in a place where I can learn from the best</p>
+            </div>
+            <div class="skill-category modal-button" onclick="toggleHighlight(this, 'tested-leader')">
+                <h3 id="tested-leader" class="summary-item">Tested Leader</h3>
+                <p>Proven track record of managing a high-volume operation and experience building a business from the ground up</p>
+            </div>
+            <div class="skill-category modal-button" onclick="toggleHighlight(this, 'data-enthusiast')">
+                <h3 id="data-enthusiast" class="summary-item">Data Enthusiast</h3>
+                <p>Enthusiastic learner and practitioner of the data arts</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="ed" class="section">
+        <h2>Education</h2>
+        <div class="button-container">
+            <button class="modal-button" onclick="openModal('ms-data-science')">MS Data Science</button>
+            <button class="modal-button" onclick="openModal('applied-business-data-analytics')">Applied Business Data Analytics</button>
+            <button class="modal-button" onclick="openModal('salesforce-development-academy')">Salesforce Development Academy</button>
+            <button class="modal-button" onclick="openModal('ba-environmental-science')">BA Environmental Science</button>
+            <button class="modal-button" onclick="openModal('high-school-diploma')">High School Diploma</button>
+        </div>
+    </div>
+    <div id="skills" class="section">
+        <h2>Skills</h2>
+        <div class="button-container">
+            <button class="modal-button" onclick="openModal('databases')">Databases</button>
+            <button class="modal-button" onclick="openModal('nlp')">Natural Language Processing</button>
+            <button class="modal-button" onclick="openModal('data-analysis')">Data Analysis and Visualization</button>
+            <button class="modal-button" onclick="openModal('machine-learning')">Machine Learning</button>
+            <button class="modal-button" onclick="openModal('generative-ai')">Generative AI</button>
+            <button class="modal-button" onclick="openModal('data-integration')">Data Integration</button>
+            <button class="modal-button" onclick="openModal('cloud-engineering')">Cloud Engineering</button>
+            <button class="modal-button" onclick="openModal('spreadsheets-bi')">Spreadsheets and BI software</button>
+            <button class="modal-button" onclick="openModal('salesforce-dev')">Salesforce Development</button>
+        </div>
+    </div>
+    <div id="experience" class="section">
+        <h2>Experience</h2>
+        <div class="button-container">
+            <button class="modal-button" onclick="openModal('happy-baos')">Kitchen Manager - Happy Bao's</button>
+            <button class="modal-button" onclick="openModal('hck-yeah')">Chef/Founder - H*CK YEAH Vegan Foods</button>
+        </div>
+    </div>
+
+
+    <div id="ms-data-scienceModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('ms-data-science')">&times;</span>
+            <h3>MS Data Science (4.0 GPA)</h3>
+            <p>Eastern University, October 2024</p>
+            <p>Eastern University's Master's in Data Science program offers a rigorous and comprehensive curriculum that takes students from foundational concepts to advanced applications in the field. The program covers essential areas including statistical modeling, machine learning, data visualization, and programming in Python and R, with a strong emphasis on practical skills and real-world data analysis. Students progress through increasingly complex topics, culminating in advanced courses on machine learning, natural language processing, and a capstone project that integrates their learning. The curriculum also addresses the ethical implications of data science and AI, ensuring graduates are well-rounded professionals. This structured approach prepares students for the demands of the rapidly evolving data science landscape in both academic and industry settings.</p>
+        </div>
+    </div>
+    <div id="applied-business-data-analyticsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('applied-business-data-analytics')">&times;</span>
+            <h3>Applied Business Data Analytics</h3>
+            <p>Arizona State University</p>
+            <p>Certificate program in practical uses for computer-based tool suites that are capable of managing vast amounts of data, offered by the W.P. Carey School of Business through AZNext. Students learn sophisticated means of managing and analyzing data, and leverage those tools to make decisions about projects, process designs and fundamental tasks.
+                    Exposure to predictive analytics and modeling, big data techniques, and visualization provides significant insight into the advanced uses of the computer-based tools. Students learn to evaluate evidence-based benchmarks and make smart data decisions, leading to high-quality outcomes.
+        </div>
+    </div>
+    <div id="salesforce-development-academyModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('salesforce-development-academy')">&times;</span>
+            <h3>Salesforce Development Academy</h3>
+            <p>Arizona State University</p>
+            <p>Gained real world, hands-on experience in developming and configuring salesforce applications that will provide preparedness for the Salesforce Platform Developer credential exam by using Salesforce's Trailhead learning system faciliated by ASU faculty and supported by ASU coursework and guest lecturers from Deloitte.</p>
+        </div>
+    </div>
+    <div id="ba-environmental-scienceModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('ba-environmental-science')">&times;</span>
+            <h3>BA Environmental Science</h3>
+            <p>Alfred University</p>
+            <p>Coursework included foundational studies in statistical data analysis and the scientific method as well as courses in the physical sciences, software engineering, and GIS.</p>
+        </div>
+    </div>
+    <div id="high-school-diplomaModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('high-school-diploma')">&times;</span>
+            <h3>High School Diploma</h3>
+            <p>Academy for Information Technology</p>
+            <p>I am proud to have attended a high school that consistently ranks among the best in the nation! When I attended, coursework included Microsoft Certified Application Specialist and A+ certification, as well as courses in SQL and Java.</p>
+        </div>
+    </div>
+
+    <div id="databasesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('databases')">&times;</span>
+            <h3>Databases</h3>
+            <p>Experience with both relational and NoSQL databases including PostgreSQL, SQLite, and MongoDB.</p>
+        </div>
+    </div>
+    <div id="nlpModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('nlp')">&times;</span>
+            <h3>Natural Language Processing</h3>
+            <p>Skills in fundamental algorithms and models like Hidden Markov and CKY as well as modern frameworks and applications including Transformers, NLTK, and BERT models. Experience building an RAG system with Langchain.</p>
+        </div>
+    </div>
+    <div id="data-analysisModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('data-analysis')">&times;</span>
+            <h3>Data Analysis and Visualization</h3>
+            <p>Data Analysis skills in R and Python, visualization with Matplotlib, Seaborn, and Ggplot2</p>
+        </div>
+    </div>
+    <div id="machine-learningModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('machine-learning')">&times;</span>
+            <h3>Machine Learning</h3>
+            <p>Proficient in various machine learning techniques; experience deploying end-to-end machine learning projects using Scikit-Learn, PyTorch, Tensorflow, and Keras</p>
+        </div>
+    </div>
+    <div id="generative-aiModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('generative-ai')">&times;</span>
+            <h3>Generative AI</h3>
+            <p>Well-versed in various generative AI frameworks including Google Cloud and Langchain</p>
+        </div>
+    </div>
+    <div id="data-integrationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('data-integration')">&times;</span>
+            <h3>Data Integration</h3>
+            <p>Practiced at collecting and integrating data using postman, REST and SOAP APIs, and JSON and XML data formats</p>
+        </div>
+    </div>
+    <div id="cloud-engineeringModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('cloud-engineering')">&times;</span>
+            <h3>Cloud Engineering</h3>
+            <p>Experience deploying an application on AWS Elastic Beanstalk, and integrating with a cloud database (MongoDB Atlas) as well as a variety of webservices.</p>
+        </div>
+    </div>
+    <div id="spreadsheets-biModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('spreadsheets-bi')">&times;</span>
+            <h3>Spreadsheets and BI software</h3>
+            <p>Advanced skills with analytical functions in Microsoft Excel and dashboards in Tableau</p>
+        </div>
+    </div>
+    <div id="salesforce-devModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('salesforce-dev')">&times;</span>
+            <h3>Salesforce Development</h3>
+            <p>Familiar with the Salesforce development framework including skills in Apex, DML, SOSL, SOQL, and Lightning Web Components</p>
+        </div>
+    </div>
+    <div id="happy-baosModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('salesforce-dev')">&times;</span>
+            <h3>Happy Bao's - Mesa, AZ</h3>
+            <p><strong>Kitchen Manager</strong> (June 2022 - October 2023)</p>
+            <ul>
+                <li>Responsible for a share of kitchen work in addition to management duties including inventory management and opening</li>
+                <li>Mentored new employees in a unique cooking style</li>
+                <li>Coordinated operations across multiple kitchens</li>
+                <li>Oversaw a 20% gain in efficiency alongside an 80% increase in productivity</li>
+            </ul>
+        </div>
+    </div>
+    <div id="happy-baosModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('salesforce-dev')">&times;</span>
+            <h3>H*CK YEAH Vegan Foods - Clark, NJ</h3>
+            <p><strong>Chef/Founder</strong> (September 2021 - March 2022)</p>
+            <ul>
+                <li>Created, tested, prepared, and served a unique menu of original vegan dishes</li>
+                <li>Marketed events in order to drive business and profitability, resulting in consistent return on investment</li>
+                <li>Created documentation including menus and recipes to ensure consistency</li>
+                <li>Collaborated with a partner to manage front of house operations</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function toggleHighlight(element, id) {
+            highlightEd(element);
+            const summaryItems = document.querySelectorAll('.summary-item');
+            const clickedItem = document.getElementById(id);
+
+            if (clickedItem.classList.contains('highlight')) {
+                // If the clicked item is already highlighted, remove highlight and show all items
+                clickedItem.classList.remove('highlight');
+                summaryItems.forEach(item => item.parentElement.classList.remove('hidden'));
+            } else {
+                // Hide all items except the clicked one
+                summaryItems.forEach(item => {
+                    if (item.id !== id) {
+                        item.parentElement.classList.add('hidden');
+                    }
+                });
+                clickedItem.classList.add('highlight');
+            }
+        }
+    </script>
+    <script>
+        function openModal(modalName) {
+            document.getElementById(modalName + 'Modal').style.display = 'block';
+        }
+
+        function closeModal(modalName) {
+            document.getElementById(modalName + 'Modal').style.display = 'none';
+        }
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = 'none';
+            }
+        }
+
+        function highlightEd(edEl) {
+            edEl.classList.toggle('highlight');
+        }
+
+    </script>
+</body>

@@ -117,3 +117,4 @@ $(document).ready(function() {
 });
 
 window.onbeforeunload = () => fetch('/stop');
+event.stopPropagation();

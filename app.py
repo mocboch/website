@@ -8,15 +8,21 @@ from copy import deepcopy as copy
 from pymongo import MongoClient
 from langchain.vectorstores import MongoDBAtlasVectorSearch
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_huggingface import HuggingFaceEmbeddings
 from langchain import hub
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 import threading
+from user_agents import parse
+from GoogleEmbeddings import Embeddings
 
 application = app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
 app.langchain_api_key = open('langchain_api_key.txt').read()
+
+def is_mobile(request):
+    user_agent = parse(request.headers.get('User-Agent'))
+    return user_agent.is_mobile
+
 
 @app.route('/refresh_chat', methods=['POST'])
 def refresh_chat():
@@ -28,6 +34,7 @@ def refresh_chat():
 def startup():                                                                      #Sets up chat and vectorstore on startup
     app.retriever_ready = False
     app.projects_retriever_ready = False
+
     with open('mongo_info.txt') as f:
         (user, password, url) = f.readlines()                                       #Assemble the mongo connection URI
     mongo_uri = f'mongodb+srv://{user.strip()}:{password.strip()}@{url.strip()}/?retryWrites=true&w=majority&appName=website-database'
@@ -37,7 +44,7 @@ def startup():                                                                  
     app.google_api_key = open('google_api_key.txt').read()
     refresh = refresh_chat()
     def create_retriever(mongo_uri=mongo_uri):
-        embeddings = HuggingFaceEmbeddings()                                            #Instantiate a HuggingFaceEmbeddings model- this is taking too long
+        embeddings = Embeddings(api_key=app.google_api_key)                                         #Instantiate a HuggingFaceEmbeddings model- this is taking too long
         '''
         projects_search = MongoDBAtlasVectorSearch.from_connection_string(
             mongo_uri,
@@ -50,9 +57,9 @@ def startup():                                                                  
         '''
         vector_search = MongoDBAtlasVectorSearch.from_connection_string(
             mongo_uri,
-            'website-database.education',                                               #Create a vector search object
+            'website-database.education-v2',                                               #Create a vector search object
             embeddings,
-            index_name="vec_ind"
+            index_name="vector_index"
         )
         app.retriever = vector_search.as_retriever(search_type="similarity", search_kwargs={"k": 15})    #Store it as a retriever for use later
         app.retriever_ready = True
@@ -60,20 +67,40 @@ def startup():                                                                  
     threading.Thread(target=create_retriever, daemon=True).start()
     app.before_request_funcs[None].remove(startup)
 
+def before_request():
+    if app.config.get('PREFERRED_URL_SCHEME', 'http') == 'https':
+        from flask import _request_ctx_stack
+        if _request_ctx_stack is not None:
+            reqctx = _request_ctx_stack.top
+            reqctx.url_adapter.url_scheme = 'https'
+
 
 @app.route('/')                                             #Home page- robot image and chatbar
 def home():
     print('/home called')
-    return render_template('home.html')
+    if is_mobile(request):
+        return render_template('mobile_resume.html')
+    else:
+        return render_template('home.html')
+
 @app.route('/projects')                                             #Projects and Github browser page
 def projects():
     print('/projects called')
-    return render_template('projects.html')
+    if is_mobile(request):
+        return render_template('mobile_projects.html')
+    else:
+        return render_template('projects.html')
 @app.route('/Resume', methods=['GET'])              #Dynamic resume page
 def Resume():
     print('/resume called')
-    return render_template('Resume.html')
+    if is_mobile(request):
+        return render_template('mobile_resume.html')
+    else:
+        return render_template('Resume.html')
 
+@app.route('/mobile_contact', methods=['GET'])
+def contact():
+    return render_template('mobile_contact.html')
 '''
 @app.route('/refresh', methods=['POST'])
 def handle_refresh():

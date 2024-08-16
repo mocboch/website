@@ -2,13 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Projects</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="static/chat.css"></link>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js"></script>
-    <script src="static/chatbot.js"></script>
-    <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
-    <title>Mark Bochner - Projects</title>
+    <link rel="stylesheet" href="../static/mobile_style.css">
     <style>
         #close-browser {
             position: absolute;
@@ -26,54 +22,6 @@
             color: #333;
             font-family: "Geist Mono Variable", sans-serif;
             background-color: #c4e1e7;
-        }
-        .page-container {
-            margin: 0 auto;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: row;
-        }
-        .page-container div {
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-            font-size: 2.5em;
-            margin-bottom: 30px;
-        }
-        .section {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            border: 1px solid #e0e0e0;
-            max-width: 800px;
-        }
-        .s{
-            margin-bottom: 20px;
-            background-color: #F0F0F0;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            border: 2px solid #000000;
-            max-width: 588px;
-            font-weight: bold;
-            color: #000000;
-            font-size: 18px;
-        }
-        .chatbot-sidebar {
-            max-width: 400px;
-            height: 100vh;
-            position: fixed;
-            right: 0;
-            top: 0;
-            background-color: #0F68B6;
-            padding: 20px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
         }
         .section:hover {
             background-color: #e9e9e9;
@@ -132,7 +80,6 @@
             margin-bottom: 10px;
         }
         .links-container {
-            align-items: center;
             position: relative;
             width: 100%;
         }
@@ -164,6 +111,7 @@
             border-radius: 5px;
             transition: all 0.3s ease;
             cursor: pointer;
+            width: 100%;
         }
         .b{
             display: inline-flex;
@@ -173,13 +121,34 @@
             cursor: pointer;
             height: 100%
         }
-
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 1px solid #e0e0e0;
+            justify-content: center;
+        }
+        .s{
+            margin-bottom: 20px;
+            background-color: #F0F0F0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 2px solid #000000;
+            max-width: 588px;
+            font-weight: bold;
+            color: #000000;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
-    <div class="page-container">
+<div class="page-container">
         <div class="links-container">
         <h1>Projects</h1>
+        <button class="nav" onclick="window.location.href ='./mobile_contact';">Contact</button><button class="nav" onclick="window.location.href ='./Resume';">Resume</button>
         <div class="section" onclick="openModal('MovieReadme')">
             <h2>Movie Script Analysis</h2>
             <div class="buttons-container">
@@ -217,11 +186,9 @@
                 <button class='button' onclick="openModal('ChatCSS');event.stopPropagation()">
                     <img style="height:16px;width:16px;margin-right:16px;" src="../static/css-3-logo.svg">
                 Chatbot Style</button>
-                <section class="button s" style="" onclick="openModal('LangchainReadme');event.stopPropagation()">
-                    Custom Implementation of the LangChain Embeddings Class
-                    <button class='b' onclick="openModal('LangchainNB');event.stopPropagation()"><img style="height:50px;width:50px;" src="../static/jupyter-logo.svg"></button>
-                    <button class='b' onclick="openModal('LangchainPy');event.stopPropagation()"><img style="height:50px;width:50px;" src="../static/python-logo.svg"></button>
-                </section>
+                <button class='button' onclick="openModal('LangchainNB');event.stopPropagation()">
+                    <img style="height:16px;width:16px;margin-right:16px;" src="../static/jupyter-logo.svg">
+                Custom LangChain Embeddings Class</button>
             </div>
         </div>
         <div class="section" onclick="openModal('QuantStudyReadme')">
@@ -249,20 +216,6 @@
 
         </div>
         </div>
-        <div class="chatbot-container">
-    <div id="calendly">
-        <div id="calendly-embed" class="calendly" style="min-width:1px;min-height:1px;display:inline-flex;"></div>
-        <button id="close-browser" onclick="closeCalendly()">Close</button>
-    </div>
-    <div class="chatbot-sidebar">
-        <h3 class="white">Mark Botner, Office Manager</h3>
-        <div class="chat-messages" id="chatMessages"></div>
-        <div class="chat-input">
-            <input type="text" id="userInput" placeholder="Type your message...">
-            <button onclick="sendMessage()">Send</button>
-        </div>
-    </div>
-    </div>
     </div>
 
     <div id="BechdelTestModal" class="modal">
@@ -346,15 +299,9 @@
             <iframe style="width:100%;height:100%;overflow:scroll"src="https://datalore.jetbrains.com/report/embed/vuaFxFrLZ4lQPRqnFZ8JlN/SP2PYD4RKXnuuh5wkeWv4a/f3XiYK62JKF1bIb1nyAqF9?height=517" frameborder="0"></iframe>
         </div>
     </div>
-    <div id="LangchainPyModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('LangchainPy')">&times;</span>
-            <script src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2Fmocboch%2Fwebsite%2Fblob%2Fmaster%2FGoogleEmbeddings.py&style=default&type=code&showBorder=on&showLineNumbers=on&showFileMeta=on&showFullPath=on&showCopy=on"></script>
-            </div>
-    </div>
     <div id="LangchainNBModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal('LangchainNB')">&times;</span>
+            <span class="close" onclick="closeModal('TikTokData')">&times;</span>
             <script src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2Fmocboch%2Fwebsite%2Fblob%2Fmaster%2FBuilding%2520a%2520Custom%2520Implementation%2520of%2520the%2520LangChain%2520Embeddings%2520Class.ipynb&style=default&type=ipynb&showBorder=on&showLineNumbers=on&showFileMeta=on&showFullPath=on&showCopy=on"></script>
         </div>
     </div>
@@ -405,37 +352,7 @@
             </ul>
         </div>
     </div>
-    <div id="LangchainReadmeModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('LangchainReadme')">&times;</span>
-            <h2>Built a Custom Implementation of the LangChain Embeddings Class</h2>
-            <ul>
-                <li>Custom class is very lightweight and will run on a small AWS server</li>
-                <li>Vector search using only 64-dimensional vectors will power RAG for Mr. Botner</li>
-                <li>More to come!</li>
-               </ul>
-        </div>
-    </div>
-    <div id="contact">
-        <div id="contact-embed" class="contact" style="min-width:320px;height:500px;display:inline-flex;">
-
-            <img src="https://genqrcode.com/embedded?style=7&inner_eye_style=3&outer_eye_style=5&logo=de7388f4e7d5c492aebc315844138144&color=%230f68b6FF&background_color=%23c4e1e7FF&inner_eye_color=%230f68b6&outer_eye_color=%23000000&imageformat=svg&language=en&frame_style=0&frame_text=SCAN%20ME&frame_color=%23000000&invert_colors=false&gradient_style=0&gradient_color_start=%230057B8&gradient_color_end=%23FFD700&gradient_start_offset=50&gradient_end_offset=50&stl_type=1&logo_remove_background=false&stl_size=100&stl_qr_height=1.5&stl_base_height=2&stl_qr_magnet_type=3&stl_qr_magnet_count=0&type=0&text=https%3A%2F%2Fqri.lu%2FN9HzcOI&width=500&height=500&bordersize=2" alt="qr code" />
-            <div class="contact-details">
-                <div class="github-card" data-github="mocboch" data-width="400" data-height="150" data-theme="default"></div>
-                <script src="//cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
-                <br><span>(908) 403-1660</span><br>
-                <span>markbochner1@gmail.com</span><br>
-                <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
-                <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="large" data-theme="light" data-type="HORIZONTAL" data-vanity="mark-bochner-618071263" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://www.linkedin.com/in/mark-bochner-618071263?trk=profile-badge">LinkedIn</a></div>
-
-
-            </div>
-        </div>
-        <button id="close-browser" onclick="closeContact()">Close</button>
-    </div>
-
-
-    <script>
+<script>
         function openModal(id) {
             document.getElementById(id + 'Modal').style.display = 'block';
         }
@@ -451,5 +368,6 @@
 
         }
     </script>
+
 </body>
 </html>
