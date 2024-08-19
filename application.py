@@ -9,36 +9,29 @@ from pymongo import MongoClient
 from langchain_community.vectorstores import MongoDBAtlasVectorSearch
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain import hub
-from langchain_core.runnables import RunnablePassthrough
+from langchain_core.runnables import RunnablePassthrough, RunnableLambda
 from langchain_core.output_parsers import StrOutputParser
 import threading
 from user_agents import parse
 from GoogleEmbeddings import Embeddings
 from datetime import datetime
+from TinyDBRetriever import TinyDBRetriever
 
 application = app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
 app.langchain_api_key = open('langchain_api_key.txt').read()
 
 
-def checkRefresh(timestamp):
-    if (datetime.now() - timestamp).seconds > 3:
-        refresh_chat()
-def is_mobile(request):
-    user_agent = parse(request.headers.get('User-Agent'))
-    return user_agent.is_mobile
 
-
-@app.route('/refresh_chat', methods=['POST'])
-def refresh_chat():
-
-    def inputUserData(name: str=None,
-                      email: str=None,
-                      how_found: str=None,
-                      is_recruiter: bool=None,
-                      company_name: str=None,
-                      job_hiring_for: str=None,
-                      job_description: str=None):
+def logChat():
+    print('logchat')
+    def inputUserData(name: str = None,
+                      email: str = None,
+                      how_found: str = None,
+                      is_recruiter: bool = None,
+                      company_name: str = None,
+                      job_hiring_for: str = None,
+                      job_description: str = None):
         '''
         Extracts data from a chat log. Called when asked to extract data from a chat log.
         Args:
@@ -50,46 +43,47 @@ def refresh_chat():
             job_hiring_for: the job the user is hiring for, or None if the user has not provided this information
             job_description: a brief description of the job if the user provides the information; otherwise None
         '''
-        return {name:name,
-                email:email,
-                how_found:how_found,
-                is_recruiter:is_recruiter,
-                company_name:company_name,
-                job_hiring_for:job_hiring_for,
-                job_description:job_description}
+        return {name: name,
+                email: email,
+                how_found: how_found,
+                is_recruiter: is_recruiter,
+                company_name: company_name,
+                job_hiring_for: job_hiring_for,
+                job_description: job_description}
 
     summary_model = genai.GenerativeModel('gemini-1.5-flash-latest', safety_settings=[
-            {
-                "category": "HARM_CATEGORY_HARASSMENT",
-                "threshold": "BLOCK_NONE"
-            },
-            {
-                "category": "HARM_CATEGORY_HATE_SPEECH",
-                "threshold": "BLOCK_NONE"
-            },
-            {
-                "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                "threshold": "BLOCK_NONE"
-            },
-            {
-                "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-                "threshold": "BLOCK_NONE"
-            },
-        ], tools=[inputUserData])
+        {
+            "category": "HARM_CATEGORY_HARASSMENT",
+            "threshold": "BLOCK_NONE"
+        },
+        {
+            "category": "HARM_CATEGORY_HATE_SPEECH",
+            "threshold": "BLOCK_NONE"
+        },
+        {
+            "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            "threshold": "BLOCK_NONE"
+        },
+        {
+            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+            "threshold": "BLOCK_NONE"
+        },
+    ], tools=[inputUserData])
     chat_history = session.get('chat_hist', [{'role': 'model',
-                                              'parts': [{'text': 'Hi there! I\'m Mark\'s AI assistant. How can I help you?'}]}])
+                                              'parts': [{
+                                                            'text': 'Hi there! I\'m Mark\'s AI assistant. How can I help you?'}]}])
 
     chat_history_string = ''
 
-    chat_history_string = [f'{chat_history_string}  {message["role"]}: {message["parts"][0]["text"]}' for message in chat_history]
+    chat_history_string = [f'{chat_history_string}  {message["role"]}: {message["parts"][0]["text"]}' for message in
+                           chat_history]
     response = summary_model.generate_content(f'Extract data from the following chat log, by calling your function:'
-                                            f'{chat_history_string}')
+                                              f'{chat_history_string}')
     args = {}
     print(response)
     for key in list(response.parts[0].function_call.args.keys()):  # serializes the arguments from gemini as a list
         args[key] = response.parts[0].function_call.args[key]
     doc = locals()[response.parts[0].function_call.name](**args)
-
 
     client = MongoClient(app.mongo_uri)
     db = client['website-database']
@@ -97,8 +91,18 @@ def refresh_chat():
     clean_doc = {key: args[key] for key in args.keys() if key is not None}
     clean_doc['log'] = chat_history_string
     clean_doc['timestamp'] = datetime.now().isoformat()
-    #print(clean_doc)
+    # print(clean_doc)
     result = collection.insert_one(clean_doc)
+
+
+def is_mobile(request):
+    user_agent = parse(request.headers.get('User-Agent'))
+    return user_agent.is_mobile
+
+
+@app.route('/refresh_chat', methods=['POST'])
+def refresh_chat():
+    logChat()
     session['chat_hist'] = [{'role': 'model',
                              'parts': [{'text': 'Hi there! I\'m Mark\'s AI assistant. How can I help you?'}]}]  # chat_hist is stored as a list of dicts in session memory
     return jsonify({'reload': 1})
@@ -112,7 +116,7 @@ def startup():                                                                  
 
     with open('mongo_info.txt') as f:
         (user, password, url) = f.readlines()                                       #Assemble the mongo connection URI
-    mongo_uri = f'mongodb+srv://{user.strip()}:{password.strip()}@{url.strip()}/?retryWrites=true&w=majority&appName=website-database'
+    mongo_uri = f'mongodb+srv://{user.strip()}:{password.strip()}@{url.strip()}/?retryWrites=true&w=majority&appName=website-database&tlsCAFile=isrgrootx1.pem'
     app.mongo_uri = mongo_uri
     app.config["MONGO_URI"] = os.environ.get('MONGODB_URI', mongo_uri)
     mongo = PyMongo(app)                                                            #Configure and run PyMongo
@@ -122,16 +126,6 @@ def startup():                                                                  
     refresh = refresh_chat()
     def create_retriever(mongo_uri=mongo_uri):
         embeddings = Embeddings(api_key=app.google_api_key)                                         #Instantiate a HuggingFaceEmbeddings model- this is taking too long
-        '''
-        projects_search = MongoDBAtlasVectorSearch.from_connection_string(
-            mongo_uri,
-            'website-database.projects',
-            embeddings,
-            index_name='vec_ind'
-        )
-        app.projects_retriever = projects_search.as_retriever(search_type="similarity", search_kwargs={"k": 5})
-        app.projects_retriever_ready = True
-        '''
         vector_search = MongoDBAtlasVectorSearch.from_connection_string(
             mongo_uri,
             'website-database.education-v2',                                               #Create a vector search object
@@ -181,12 +175,7 @@ def Resume():
 @app.route('/mobile_contact', methods=['GET'])
 def contact():
     return render_template('mobile_contact.html')
-'''
-@app.route('/refresh', methods=['POST'])
-def handle_refresh():
-    session['chat_hist'] = []
-    return home()
-'''
+
 @app.route('/handleMemo', methods=['POST'])
 def handleMemo():
     message = request.json['message']
@@ -209,37 +198,14 @@ def handleMemo():
 
 @app.route('/chat', methods=['POST'])
 def chat():                                         #Chat response logic
-    app.last_chat = datetime.now()
-    threading.Thread(target=checkRefresh(app.last_chat), daemon=True).start()
     genai.configure(api_key=app.google_api_key)           #showResume returns a stock messsage and reroutes to the resume page
-                                                 #It also updates the session[chat_hist] to give the model the appropriate context
-    '''
-    def discussProject(query: str):
-        ''''''
-        Provides information about Mark's project experience to the User. Called when the user requests information about Mark's projects or experience.
-        Args:
-            query: A string containing the user's query. Copied or lightly modified if necessary
-        Returns:
-            The requested information about Mark's project experience
-        ''''''
-        client = MongoClient(app.mongo_uri)
-        model = ChatGoogleGenerativeAI(model='gemini-1.5-flash', api_key=app.google_api_key)
-        prompt = hub.pull("project-prompt", api_key=app.langchain_api_key)
-
-        def format_docs(docs):
-            return "\n\n".join(doc.page_content for doc in docs)
-
-        rag_chain = (
-                {"context": app.projects_retriever | format_docs, "question": RunnablePassthrough()}
-                | prompt
-                | model
-                | StrOutputParser()
-        )
-        r = ' '.join([chunk for chunk in rag_chain.stream(query)])
-        session['chat_hist'][-1]['parts'][0]['text'] = r
-        print(query)
-        return jsonify({'response': r, 'type': 1})
-    '''
+    count = session.get('count', 0)
+    count += 1
+    print(count)
+    if count == 10:
+        count = 0
+        logChat()
+    session['count'] = count
 
     def goHome(text: str=None):
         '''
@@ -281,7 +247,7 @@ def chat():                                         #Chat response logic
         '''
         print('showResume called')
         if job_title is None:
-            if text is None or text.strip() == '':
+            if text is None or text.strip() == '' or text.strip() is None:
                 text = session['chat_hist'][-1]['parts'][0]['text'] = 'Sure, here is Mark\'s resume'
             else:
                 session['chat_hist'][-1]['parts'][0]['text'] = text
@@ -306,7 +272,7 @@ def chat():                                         #Chat response logic
                 category = 'none'
         return jsonify({'response': text, 'redirect_url': url_for('Resume'), 'type':5, 'category': category, 'job_title':job_title})
 
-    #discussEducation is currently called very narrowly for the ABDA for testing purposes.
+
     #It searches documents related to my education and returns them as context
     #Also updates chat history for the model
     def sendMemo():
@@ -348,6 +314,37 @@ def chat():                                         #Chat response logic
             session['chat_hist'][-1]['parts'][0]['text'] = text
         return jsonify({'response': 'I can set up a meeting with Mark- Have a look at his calendar and let me know what works for you.',
                         'type': 4, 'request': 'calendar'})
+
+    def askMark(query: str):
+        '''
+        Answers any question a user may have about Mark. Called when no other tool is appropriate to answer a user's question.
+        Args:
+            query: A string containing the user's request
+        Returns:
+            A response to the user's request
+        '''
+        print('DM Called')
+        model = ChatGoogleGenerativeAI(model='gemini-1.5-flash', api_key=app.google_api_key)
+
+        prompt = hub.pull('mocboch/rag-modified')
+        def format_docs(docs):
+            return "\n\n".join(doc.page_content for doc in docs)
+
+        TDBR = TinyDBRetriever(tinydb_filepath='personal-info.json',google_api_key=app.google_api_key,k=3)
+        retriever = RunnableLambda(TDBR._get_relevant_documents)
+
+        rag_chain = (
+                {"context": retriever | format_docs, "question": RunnablePassthrough()}
+                | prompt
+                | model
+                | StrOutputParser()
+        )
+        r = ' '.join([chunk for chunk in rag_chain.stream(query)])
+        session['chat_hist'][-1]['parts'][0]['text'] = r
+        print(query)
+        print(r)
+        return jsonify({'response': r, 'type': 1})
+
     def discussEducation(query: str):
         '''
         Do not ask followup questions before calling this function.
@@ -362,10 +359,8 @@ def chat():                                         #Chat response logic
         client = MongoClient(app.mongo_uri)
         model = ChatGoogleGenerativeAI(model='gemini-1.5-flash', api_key=app.google_api_key)
         prompt = hub.pull('rlm/rag-prompt')
-
         def format_docs(docs):
             return "\n\n".join(doc.page_content for doc in docs)
-
         rag_chain = (
                 {"context": app.retriever | format_docs, "question": RunnablePassthrough()}
                 | prompt
@@ -376,7 +371,7 @@ def chat():                                         #Chat response logic
         session['chat_hist'][-1]['parts'][0]['text'] = r
         print(query)
         return jsonify({'response': r, 'type':1})
-    tools = [showContact, sendMemo, setInterview, goHome, showResume, showProjects]
+    tools = [askMark, showContact, sendMemo, setInterview, goHome, showResume, showProjects]
     if app.retriever_ready == True: tools.append(discussEducation)
     #if app.projects_retriever_ready == True: tools.append(discussProject)
     model = genai.GenerativeModel('gemini-1.5-flash-latest', safety_settings=[
@@ -397,13 +392,13 @@ def chat():                                         #Chat response logic
                 "threshold": "BLOCK_NONE"
             },
         ], tools=tools)                                                     #Instantiate a model with tools
-    hist = session.get('chat_hist', [{'role': 'model',
+    hist = session['chat_hist'] = session.get('chat_hist', [{'role': 'model',
                              'parts': [{'text': 'Hi there! I\'m Mark\'s AI assistant. How can I help you?'}]}])                                         #Get the chat history, which can be fed to the model as a list of dicts
-    chat = model.start_chat(history=[{'role': 'user', 'parts': [{'text': 'You are Mr. Botner, Mark\'s AI assistant. You will attend politely to the user\'s requests. Do not be pushy, and make sure to call your tools when appropriate. If an opportunity presents itself, you may ask what role the user is hiring for, at what company, who they are, etc. The user is currently looking at Mark\'s ' + app.current_page + ' page.'}]}] + hist[-10:])                                   #Start a chat with the model and history
+    chat = model.start_chat(history=[{'role': 'user', 'parts': [{'text': 'You are Mark\'s assistant. You will attend politely to the user\'s requests by calling the appropriate tools. If an opportunity presents itself, you will ask what role the user is hiring for, at what company, who they are, etc. The user is currently looking at Mark\'s ' + app.current_page + ' page.'}]}] + hist[-6:])                                   #Start a chat with the model and history
     message = request.json['message']                                       #Gets the message (prompt) from the front end
     response = chat.send_message(message)
     print(response)#Calls gemini for a response to the prompt
-    bypass_response_functions = [discussEducation]
+    bypass_response_functions = ['discussEducation', 'askMark']
     if not response.parts[0].function_call and len(response.parts) == 1:                                     #Returns a text based response directly to the front end
         session['chat_hist'] += [{'role': msg.role,                          #Serializes the chat history as a list of dicts and puts it away in the session storage
                                  'parts': [{'text': part.text}
