@@ -4,12 +4,121 @@
     <link rel="stylesheet" href="../static/chat.css">
     <meta charset="UTF-8">
     <title>Mark Bochner - Resume</title>
-    <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    function openModal(id) {
+        document.getElementById(id + 'Modal').style.display = 'block';
+    }
+
+    function closeModal(id) {
+        document.getElementById(id + 'Modal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target.className === 'modal') {
+            event.target.style.display = 'none';
+        }
+
+    }
+</script>
+    <script>
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+        function highlightSummary(element, id) {
+            highlightEd(element)
+            const summaryItems = document.querySelectorAll('.summary-item');
+            const clickedItem = document.getElementById(id);
+            if (clickedItem.classList.contains('highlight')) {
+                // If the clicked item is already highlighted, remove highlight and show all items
+                clickedItem.classList.remove('highlight');
+                summaryItems.forEach(item => item.parentElement.classList.remove('hidden'));
+            } else {
+                // Hide all items except the clicked one
+                summaryItems.forEach(item => {
+                    if (item.id !== id) {
+                        item.parentElement.classList.add('hidden');
+                    }
+                });
+                clickedItem.classList.add('highlight');
+            }
+        }
+        async function highlightSkill(skillElement) {
+            skillElement.classList.toggle('hlight');
+            if ($('.hlight').hasClass('highlight')){
+                $('.hlight').fadeOut(250);
+                await sleep(250);
+                skillElement.classList.toggle('highlight');
+                $('.hlight').appendTo('#sk').fadeIn(100);
+                skillElement.classList.toggle('hlight');
+            }
+            else {
+                $('.hlight').fadeOut(250);
+                await sleep(250)
+                skillElement.classList.toggle('highlight');
+                $('.hlight').prependTo('#sk').fadeIn(100);
+                skillElement.classList.toggle('hlight');
+            }
+
+        }
+        function highlightEd(edEl) {
+            edEl.classList.toggle('highlight');
+        }
+
+        $(document).ready(function() {
+            switch (sessionStorage.getItem('resume_category')) {
+                case 'engineer':
+                    highlightSummary(document.getElementById('eng'), 'engineer');
+                    highlightSkill(document.getElementById('di'));
+                    highlightSkill(document.getElementById('nlp'));
+                    highlightSkill(document.getElementById('ml'));
+                    highlightSkill(document.getElementById('ce'));
+
+                    break;
+                case 'student':
+                    highlightSummary(document.getElementById('stu'), 'student');
+                    highlightSkill(document.getElementById('ml'));
+                    highlightSkill(document.getElementById('nlp'));
+                    highlightSkill(document.getElementById('db'));
+                    highlightSkill(document.getElementById('dav'));
+                    break;
+                case 'mentorship':
+                    highlightSummary(document.getElementById('ment'), 'mentorship');
+                    highlightSkill(document.getElementById('dav'));
+                    highlightSkill(document.getElementById('nlp'));
+                    highlightSkill(document.getElementById('ai'));
+                    highlightSkill(document.getElementById('ml'));
+                    break;
+                case 'leader':
+                    highlightSummary(document.getElementById('lead'), 'leader');
+                    highlightSkill(document.getElementById('dav'));
+                    highlightSkill(document.getElementById('di'));
+                    highlightSkill(document.getElementById('ml'));
+                    break;
+                case 'data':
+                    highlightSummary(document.getElementById('dat'), 'data');
+                    highlightSkill(document.getElementById('dav'));
+                    highlightSkill(document.getElementById('db'));
+                    highlightSkill(document.getElementById('bi'));
+                    highlightSkill(document.getElementById('ce'));
+                    highlightSkill(document.getElementById('di'));
+                    break;
+
+
+
+            }
+            const element = document.getElementById(sessionStorage.getItem('resume_category'));
+            element.innerText = sessionStorage.getItem('job_title');
+        })
+
+
+    </script>
+    <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
     <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js"></script>
     <script src="static/chatbot.js"></script>
 
     <style>
+        .hidden {
+            display: none;
+        }
         .modal {
             display: none;
             position: fixed;
@@ -82,6 +191,7 @@
             padding-bottom: 10px;
             margin-top: 30px;
         }
+
         .section {
             background-color: white;
             margin-bottom: 20px;
@@ -195,36 +305,21 @@
         #summary {
           display: flex;
           flex-wrap: nowrap;
-          overflow-x: auto;
           padding: 10px 0;
-          height: 90px
+          height: 90px;
         }
         #summary h3 {
             margin: 0;
         }
 
         #summary .skill-category {
-          flex: 0 0 auto;
-          width: auto;
-          max-width: none;
           height: 65px;
           padding: 10px;
-          overflow-x: auto;
-          overflow-y: hidden;
+        }
+        #summary .skill-category.highlight {
+            width: 100%;
         }
 
-
-
-        /* Hide scrollbar for Chrome, Safari and Opera */
-        #summary::-webkit-scrollbar {
-          display: none;
-        }
-
-        /* Hide scrollbar for IE, Edge and Firefox */
-        #summary {
-          -ms-overflow-style: none;  /* IE and Edge */
-          scrollbar-width: none;  /* Firefox */
-        }
         .summary-item {
             font-size:21px;
             font-weight: bold;
@@ -246,32 +341,87 @@
     <header class="center">
         <h1>Mark Bochner</h1>
     <section id="summary" class="section">
-        <div class="skill-category" onclick="highlightEd(this)">
-            <h3 class="summary-item">AI/ML Engineer</h3>
+        <div class="skill-category" id="eng" onclick="highlightSummary(this, 'engineer')">
+            <h3 id="engineer" class="summary-item">AI/ML Engineer</h3>
             <p>Creative builder with a passion for design and a desire<br>
                 to work on the cutting edge of Artificial Intelligence</p>
         </div>
-        <div class="skill-category" onclick="highlightEd(this)">
-            <h3 class="summary-item">Data Science Student</h3>
+        <div class="skill-category" id="stu" onclick="highlightSummary(this, 'student')">
+            <h3 id="student" class="summary-item">Data Science Student</h3>
             <p>Curious, lifelong learner with particular interests in <br>
                 Natural Language Processing and Bayesian statistics</p>
         </div>
-        <div class="skill-category" onclick="highlightEd(this)">
-            <h3 class="summary-item">Seeking Mentorship</h3>
+        <div class="skill-category" id="ment" onclick="highlightSummary(this, 'mentorship')">
+            <h3 id="mentorship" class="summary-item">Seeking Mentorship</h3>
             <p>Looking for an entry level role in AI Engineering or Data<br>
                 Science, in a place where I can learn from the best</p>
         </div>
-        <div class="skill-category" onclick="highlightEd(this)">
-            <h3 class="summary-item">Tested Leader</h3>
+        <div class="skill-category" id="lead" onclick="highlightSummary(this, 'leader')">
+            <h3 id="leader" class="summary-item">Tested Leader</h3>
             <p>Proven track record of managing a high-volume operation <br>
                 and experience building a business from the ground up</p>
         </div>
-        <div class="skill-category" onclick="highlightEd(this)">
-            <h3 class="summary-item">Data Enthusiast</h3>
+        <div class="skill-category" id="dat" onclick="highlightSummary(this, 'data')">
+            <h3 id="data" class="summary-item">Data Enthusiast</h3>
             <p>Enthusiastic learner and practitioner of the data arts</p>
         </div>
     </section>
     </header>
+    <section id="skills" class="section">
+        <h2>Skills</h2>
+        <div class="skills" id="sk">
+            <div id="db" class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Databases</h3>
+                <p>Experience with both relational and NoSQL databases
+                including PostgreSQL, SQLite, and MongoDB.</p>
+            </div>
+            <div id="nlp" class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Natural Language Processing</h3>
+                <p>Knowledge of fundamental algorithms and models like Hidden Markov and CKY
+                    as well as modern frameworks and applications including Transformers,
+                    NLTK, and BERT models. Experience building an RAG system with Langchain.</p>
+            </div>
+            <div id="dav" class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Data Analysis and Visualization</h3>
+                <p>Data Analysis skills in R and Python,
+                    visualization with Matplotib, Seaborn, and Ggplot2</p>
+            </div>
+            <div id="ml" class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Machine Learning</h3>
+                <p>Proficient in various machine learning techniques;
+                    experience deploying end-to-end machine learning projects
+                    using Scikit-Learn, PyTorch, Tensorflow, and Keras</p>
+            </div>
+            <div id="ai" class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Generative AI</h3>
+                <p>Well-versed in various generative AI frameworks
+                    including Google Cloud and Langchain</p>
+            </div>
+            <div id="di" class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Data Integration</h3>
+                <p>Practiced at collecting and integrating data using postman,
+                    REST and SOAP APIs, and JSON and XML data formats</p>
+            </div>
+            <div id="ce" class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Cloud Engineering</h3>
+                <p>Experience deploying an application on AWS Elastic
+                Beanstalk, and integrating with a cloud database
+                (MongoDB Atlas) as well as a variety of webservices.</p>
+            </div>
+            <div id="bi" class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Spreadsheets and BI software</h3>
+                <p>Advanced skills with analytical functions
+                    in Microsoft Excel and dashboards in Tableau</p>
+            </div>
+            <div id="sd" class="skill-category sk" onclick="highlightSkill(this)">
+                <h3>Salesforce Development</h3>
+                <p>Familiar with the Salesforce development framework
+                    including skills in Apex, DML, SOSL, SOQL,
+                    and Lightning Web Components</p>
+            </div>
+
+        </div>
+    </section>
     <section id="ed" class="section">
         <h2>Education</h2>
         <div class="skill-category" onclick="highlightEd(this)">
@@ -300,61 +450,6 @@
                 <h3>High School Diploma</h3>
                 <h4>Academy for Information Technology</h4>
                 <p>I am proud to have attended a high school that consistently ranks among the best in the nation! When I attended, coursework included Microsoft Certified Application Specialist and A+ certification, as well as courses in SQL and Java.</p>
-        </div>
-    </section>
-    <section id="skills" class="section">
-        <h2>Skills</h2>
-        <div class="skills" id="sk">
-            <div class="skill-category sk" onclick="highlightSkill(this)">
-                <h3>Databases</h3>
-                <p>Experience with both relational and NoSQL databases
-                including PostgreSQL, SQLite, and MongoDB.</p>
-            </div>
-            <div class="skill-category sk" onclick="highlightSkill(this)">
-                <h3>Natural Language Processing</h3>
-                <p>Skills in fundamental algorithms and models like Hidden Markov and CKY
-                    as well as modern frameworks and applications including Transformers,
-                    NLTK, and BERT models. Experience building an RAG system with Langchain.</p>
-            </div>
-            <div class="skill-category sk" onclick="highlightSkill(this)">
-                <h3>Data Analysis and Visualization</h3>
-                <p>Data Analysis skills in R and Python,
-                    visualization with Matplotib, Seaborn, and Ggplot2</p>
-            </div>
-            <div class="skill-category sk" onclick="highlightSkill(this)">
-                <h3>Machine Learning</h3>
-                <p>Proficient in various machine learning techniques;
-                    experience deploying end-to-end machine learning projects
-                    using Scikit-Learn, PyTorch, Tensorflow, and Keras</p>
-            </div>
-            <div class="skill-category sk" onclick="highlightSkill(this)">
-                <h3>Generative AI</h3>
-                <p>Well-versed in various generative AI frameworks
-                    including Google Cloud and Langchain</p>
-            </div>
-            <div class="skill-category sk" onclick="highlightSkill(this)">
-                <h3>Data Integration</h3>
-                <p>Practiced at collecting and integrating data using postman,
-                    REST and SOAP APIs, and JSON and XML data formats</p>
-            </div>
-            <div class="skill-category sk" onclick="highlightSkill(this)">
-                <h3>Cloud Engineering</h3>
-                <p>Experience deploying an application on AWS Elastic
-                Beanstalk, and integrating with a cloud database
-                (MongoDB Atlas) as well as a variety of webservices.</p>
-            </div>
-            <div class="skill-category sk" onclick="highlightSkill(this)">
-                <h3>Spreadsheets and BI software</h3>
-                <p>Advanced skills with analytical functions
-                    in Microsoft Excel and dashboards in Tableau</p>
-            </div>
-            <div class="skill-category sk" onclick="highlightSkill(this)">
-                <h3>Salesforce Development</h3>
-                <p>Familiar with the Salesforce development framework
-                    including skills in Apex, DML, SOSL, SOQL,
-                    and Lightning Web Components</p>
-            </div>
-
         </div>
     </section>
     <section id="certs" class="section">
@@ -420,6 +515,10 @@
         <button id="close-browser" onclick="closeContact()">Close</button>
     </div>
     <div class="chatbot-sidebar">
+        <div style="display:flex;flex-direction:row;">
+            <a href="./projects"><button>Portfolio</button></a>
+            <a href="./"><button>Home</button></a>
+        </div>
         <h3 class="white">Mark Botner, Office Manager</h3>
         <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input">
@@ -428,47 +527,7 @@
         </div>
     </div>
 </div>
-<script>
-    function openModal(id) {
-        document.getElementById(id + 'Modal').style.display = 'block';
-    }
 
-    function closeModal(id) {
-        document.getElementById(id + 'Modal').style.display = 'none';
-    }
-
-    window.onclick = function(event) {
-        if (event.target.className === 'modal') {
-            event.target.style.display = 'none';
-        }
-
-    }
-</script>
-<script>
-        const sleep = ms => new Promise(r => setTimeout(r, ms));
-        async function highlightSkill(skillElement) {
-            skillElement.classList.toggle('hlight');
-            if ($('.hlight').hasClass('highlight')){
-                $('.hlight').fadeOut(250);
-                await sleep(250);
-                skillElement.classList.toggle('highlight');
-                $('.hlight').appendTo('#sk').fadeIn(100);
-                skillElement.classList.toggle('hlight');
-            }
-            else {
-                $('.hlight').fadeOut(250);
-                await sleep(250)
-                skillElement.classList.toggle('highlight');
-                $('.hlight').prependTo('#sk').fadeIn(100);
-                skillElement.classList.toggle('hlight');
-            }
-
-        }
-        function highlightEd(edEl) {
-            edEl.classList.toggle('highlight');
-        }
-
-    </script>
 <div id="GoogleModal" class="modal">
     <section class="modal-content">
         <embed width="600" height="550" src="./static/Coursera DUY3KCG9J92D.pdf">

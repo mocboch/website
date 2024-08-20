@@ -86,6 +86,10 @@
         <h1>Mark Bochner</h1>
       </div>
       <div class="chatbot-sidebar">
+        <div style="display:flex;flex-direction:row;">
+            <a href="./projects"><button>Portfolio</button></a>
+            <a href="./Resume"><button>Resume</button></a>
+        </div>
         <h3 class="white">Mark Botner, Office Manager</h3>
         <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input">
@@ -95,7 +99,11 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                }}).then(location.reload());">Refresh
+                }}).then(response => response.json())
+                .then(data => {
+                    if (data.reload === 1) {
+                        location.reload();
+                    }});">Refresh
             </button>
         </div>
     </div>

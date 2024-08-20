@@ -217,11 +217,15 @@
                 <button class='button' onclick="openModal('ChatCSS');event.stopPropagation()">
                     <img style="height:16px;width:16px;margin-right:16px;" src="../static/css-3-logo.svg">
                 Chatbot Style</button>
-                <section class="button s" style="" onclick="openModal('LangchainReadme');event.stopPropagation()">
-                    Custom Implementation of the LangChain Embeddings Class
-                    <button class='b' onclick="openModal('LangchainNB');event.stopPropagation()"><img style="height:50px;width:50px;" src="../static/jupyter-logo.svg"></button>
-                    <button class='b' onclick="openModal('LangchainPy');event.stopPropagation()"><img style="height:50px;width:50px;" src="../static/python-logo.svg"></button>
-                </section>
+                <button class='button' onclick="openModal('LangchainNB');event.stopPropagation()">
+                    <img style="height:16px;width:16px;margin-right:16px;" src="../static/jupyter-logo.svg">
+                Custom Implementation of the LangChain Embeddings Class</button>
+                <button class='button' onclick="openModal('TDBR');event.stopPropagation()">
+                    <img style="height:16px;width:16px;margin-right:16px;" src="../static/python-logo.svg">
+                TinyDBRetriever - A Custom Retriever for TinyDB and LangChain</button>
+                <button class='button' onclick="openModal('TDBR_NB');event.stopPropagation()">
+                    <img style="height:16px;width:16px;margin-right:16px;" src="../static/jupyter-logo.svg">
+                Building a Local Database for RAG with TinyDB</button>
             </div>
         </div>
         <div class="section" onclick="openModal('QuantStudyReadme')">
@@ -255,6 +259,10 @@
         <button id="close-browser" onclick="closeCalendly()">Close</button>
     </div>
     <div class="chatbot-sidebar">
+        <div style="display:flex;flex-direction:row;">
+            <a href="./Resume"><button>Resume</button></a>
+            <a href="./"><button>Home</button></a>
+        </div>
         <h3 class="white">Mark Botner, Office Manager</h3>
         <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input">
@@ -356,6 +364,18 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal('LangchainNB')">&times;</span>
             <script src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2Fmocboch%2Fwebsite%2Fblob%2Fmaster%2FBuilding%2520a%2520Custom%2520Implementation%2520of%2520the%2520LangChain%2520Embeddings%2520Class.ipynb&style=default&type=ipynb&showBorder=on&showLineNumbers=on&showFileMeta=on&showFullPath=on&showCopy=on"></script>
+        </div>
+    </div>
+    <div id="TDBRModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('TDBR')">&times;</span>
+            <script src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2Fmocboch%2Fwebsite%2Fblob%2Fmaster%2FTinyDBRetriever.py&style=default&type=code&showBorder=on&showLineNumbers=on&showFileMeta=on&showFullPath=on&showCopy=on"></script>
+        </div>
+    </div>
+    <div id="TDBR_NBModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('TDBR_NB')">&times;</span>
+            <script src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2Fmocboch%2Fwebsite%2Fblob%2Fmaster%2FSetting%2520Up%2520a%2520Local%2520Database%2520in%2520TinyDB.ipynb&style=default&type=ipynb&showBorder=on&showLineNumbers=on&showFileMeta=on&showFullPath=on&showCopy=on"></script>
         </div>
     </div>
 

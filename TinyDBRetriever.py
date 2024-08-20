@@ -3,7 +3,7 @@ import pandas as pd
 from GoogleEmbeddings import Embeddings
 from tinydb import TinyDB, Query
 from langchain_core.documents import Document
-from langchain_core.retrievers import BaseRetriever
+from langchain_core.runnables import RunnableLambda
 
 
 class TinyDBRetriever():
@@ -48,6 +48,9 @@ class TinyDBRetriever():
             metadata={"question": table.get(doc_id=doc[0])['question']}) for doc in scores.iterrows()]
 
         return docs
+
+    def as_retriever(self):
+        return RunnableLambda(self._get_relevant_documents)
 
 
 
